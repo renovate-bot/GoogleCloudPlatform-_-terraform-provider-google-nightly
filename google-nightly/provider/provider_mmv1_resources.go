@@ -654,9 +654,9 @@ var handwrittenIAMDatasources = map[string]*schema.Resource{
 }
 
 // Resources
-// Generated resources: 798
+// Generated resources: 801
 // Generated IAM resources: 360
-// Total generated resources: 1158
+// Total generated resources: 1161
 var generatedResources = map[string]*schema.Resource{
 	"google_folder_access_approval_settings":                                     registry.Resource("google_folder_access_approval_settings"),
 	"google_organization_access_approval_settings":                               registry.Resource("google_organization_access_approval_settings"),
@@ -847,6 +847,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_ces_toolset":                                                         registry.Resource("google_ces_toolset"),
 	"google_chronicle_data_access_label":                                         registry.Resource("google_chronicle_data_access_label"),
 	"google_chronicle_data_access_scope":                                         registry.Resource("google_chronicle_data_access_scope"),
+	"google_chronicle_data_table":                                                registry.Resource("google_chronicle_data_table"),
 	"google_chronicle_reference_list":                                            registry.Resource("google_chronicle_reference_list"),
 	"google_chronicle_retrohunt":                                                 registry.Resource("google_chronicle_retrohunt"),
 	"google_chronicle_rule":                                                      registry.Resource("google_chronicle_rule"),
@@ -1078,6 +1079,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_compute_vpn_tunnel":                                                  registry.Resource("google_compute_vpn_tunnel"),
 	"google_compute_wire_group":                                                  registry.Resource("google_compute_wire_group"),
 	"google_contact_center_insights_analysis_rule":                               registry.Resource("google_contact_center_insights_analysis_rule"),
+	"google_contact_center_insights_auto_labeling_rule":                          registry.Resource("google_contact_center_insights_auto_labeling_rule"),
 	"google_contact_center_insights_view":                                        registry.Resource("google_contact_center_insights_view"),
 	"google_container_analysis_note":                                             registry.Resource("google_container_analysis_note"),
 	"google_container_analysis_note_iam_binding":                                 registry.Resource("google_container_analysis_note_iam_binding"),
@@ -1201,6 +1203,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_dialogflow_conversation_profile":                                     registry.Resource("google_dialogflow_conversation_profile"),
 	"google_dialogflow_encryption_spec":                                          registry.Resource("google_dialogflow_encryption_spec"),
 	"google_dialogflow_entity_type":                                              registry.Resource("google_dialogflow_entity_type"),
+	"google_dialogflow_environment":                                              registry.Resource("google_dialogflow_environment"),
 	"google_dialogflow_fulfillment":                                              registry.Resource("google_dialogflow_fulfillment"),
 	"google_dialogflow_generator":                                                registry.Resource("google_dialogflow_generator"),
 	"google_dialogflow_intent":                                                   registry.Resource("google_dialogflow_intent"),
@@ -1884,6 +1887,7 @@ var handwrittenResources = map[string]*schema.Resource{
 	"google_project_service_identity":              resourcemanager.ResourceProjectServiceIdentity(),
 	"google_service_networking_connection":         servicenetworking.ResourceServiceNetworkingConnection(),
 	"google_sql_database_instance":                 sql.ResourceSqlDatabaseInstance(),
+	"google_sql_provision_script":                  sql.ResourceSqlProvisionScript(),
 	"google_sql_ssl_cert":                          sql.ResourceSqlSslCert(),
 	"google_sql_user":                              sql.ResourceSqlUser(),
 	"google_organization_iam_custom_role":          resourcemanager.ResourceGoogleOrganizationIamCustomRole(),

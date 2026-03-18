@@ -64,7 +64,7 @@ import (
 	"google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	resourceManagerV3 "google.golang.org/api/cloudresourcemanager/v3"
-	composer "google.golang.org/api/composer/v1beta1"
+	"google.golang.org/api/composer/v1beta1"
 	compute "google.golang.org/api/compute/v0.beta"
 	container "google.golang.org/api/container/v1beta1"
 	dataflow "google.golang.org/api/dataflow/v1b3"
@@ -699,7 +699,7 @@ var DefaultBasePaths = map[string]string{
 	DatastreamBasePathKey:               "https://datastream.googleapis.com/v1/",
 	DeploymentManagerBasePathKey:        "https://www.googleapis.com/deploymentmanager/v2/",
 	DeveloperConnectBasePathKey:         "https://developerconnect.googleapis.com/v1/",
-	DialogflowBasePathKey:               "https://dialogflow.googleapis.com/v2/",
+	DialogflowBasePathKey:               "https://dialogflow.googleapis.com/v2beta1/",
 	DialogflowCXBasePathKey:             "https://{{location}}-dialogflow.googleapis.com/v3beta1/",
 	DiscoveryEngineBasePathKey:          "https://{{location}}-discoveryengine.googleapis.com/v1/",
 	DNSBasePathKey:                      "https://dns.googleapis.com/dns/v1beta2/",
