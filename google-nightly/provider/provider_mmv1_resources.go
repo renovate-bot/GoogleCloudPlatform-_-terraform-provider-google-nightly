@@ -22,6 +22,7 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/accessapproval"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/accesscontextmanager"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/activedirectory"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/agentregistry"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/alloydb"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/apigateway"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/apigee"
@@ -207,6 +208,9 @@ var handwrittenDatasources = map[string]*schema.Resource{
 	"google_access_context_manager_supported_service":            accesscontextmanager.DataSourceAccessContextManagerSupportedService(),
 	"google_access_context_manager_supported_services":           accesscontextmanager.DataSourceAccessContextManagerSupportedServices(),
 	"google_active_folder":                                       resourcemanager.DataSourceGoogleActiveFolder(),
+	"google_agent_registry_agent":                                agentregistry.DataSourceAgentRegistryAgent(),
+	"google_agent_registry_endpoint":                             agentregistry.DataSourceAgentRegistryEndpoint(),
+	"google_agent_registry_mcp_server":                           agentregistry.DataSourceAgentRegistryMcpServer(),
 	"google_alloydb_cluster":                                     alloydb.DataSourceAlloydbDatabaseCluster(),
 	"google_alloydb_locations":                                   alloydb.DataSourceAlloydbLocations(),
 	"google_alloydb_supported_database_flags":                    alloydb.DataSourceAlloydbSupportedDatabaseFlags(),
@@ -305,6 +309,7 @@ var handwrittenDatasources = map[string]*schema.Resource{
 	"google_compute_networks":                                    compute.DataSourceGoogleComputeNetworks(),
 	"google_compute_network_attachment":                          compute.DataSourceGoogleComputeNetworkAttachment(),
 	"google_compute_network_endpoint_group":                      compute.DataSourceGoogleComputeNetworkEndpointGroup(),
+	"google_compute_network_endpoint_groups":                     compute.DataSourceGoogleComputeNetworkEndpointGroups(),
 	"google_compute_network_peering":                             compute.DataSourceComputeNetworkPeering(),
 	"google_compute_node_types":                                  compute.DataSourceGoogleComputeNodeTypes(),
 	"google_compute_regions":                                     compute.DataSourceGoogleComputeRegions(),
@@ -654,9 +659,9 @@ var handwrittenIAMDatasources = map[string]*schema.Resource{
 }
 
 // Resources
-// Generated resources: 801
+// Generated resources: 804
 // Generated IAM resources: 360
-// Total generated resources: 1161
+// Total generated resources: 1164
 var generatedResources = map[string]*schema.Resource{
 	"google_folder_access_approval_settings":                                     registry.Resource("google_folder_access_approval_settings"),
 	"google_organization_access_approval_settings":                               registry.Resource("google_organization_access_approval_settings"),
@@ -683,6 +688,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_active_directory_domain":                                             registry.Resource("google_active_directory_domain"),
 	"google_active_directory_domain_trust":                                       registry.Resource("google_active_directory_domain_trust"),
 	"google_active_directory_peering":                                            registry.Resource("google_active_directory_peering"),
+	"google_agent_registry_service":                                              registry.Resource("google_agent_registry_service"),
 	"google_alloydb_backup":                                                      registry.Resource("google_alloydb_backup"),
 	"google_alloydb_cluster":                                                     registry.Resource("google_alloydb_cluster"),
 	"google_alloydb_instance":                                                    registry.Resource("google_alloydb_instance"),
@@ -1079,6 +1085,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_compute_vpn_tunnel":                                                  registry.Resource("google_compute_vpn_tunnel"),
 	"google_compute_wire_group":                                                  registry.Resource("google_compute_wire_group"),
 	"google_contact_center_insights_analysis_rule":                               registry.Resource("google_contact_center_insights_analysis_rule"),
+	"google_contact_center_insights_assessment_rule":                             registry.Resource("google_contact_center_insights_assessment_rule"),
 	"google_contact_center_insights_auto_labeling_rule":                          registry.Resource("google_contact_center_insights_auto_labeling_rule"),
 	"google_contact_center_insights_view":                                        registry.Resource("google_contact_center_insights_view"),
 	"google_container_analysis_note":                                             registry.Resource("google_container_analysis_note"),
@@ -1453,6 +1460,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_kms_key_ring":                                                        registry.Resource("google_kms_key_ring"),
 	"google_kms_key_ring_import_job":                                             registry.Resource("google_kms_key_ring_import_job"),
 	"google_kms_organization_kaj_policy_config":                                  registry.Resource("google_kms_organization_kaj_policy_config"),
+	"google_kms_project_autokey_config":                                          registry.Resource("google_kms_project_autokey_config"),
 	"google_kms_project_kaj_policy_config":                                       registry.Resource("google_kms_project_kaj_policy_config"),
 	"google_kms_secret_ciphertext":                                               registry.Resource("google_kms_secret_ciphertext"),
 	"google_logging_folder_settings":                                             registry.Resource("google_logging_folder_settings"),
@@ -1995,6 +2003,7 @@ func UseGeneratedProducts() {
 	var _ = accessapproval.ProductName
 	var _ = accesscontextmanager.ProductName
 	var _ = activedirectory.ProductName
+	var _ = agentregistry.ProductName
 	var _ = alloydb.ProductName
 	var _ = apigateway.ProductName
 	var _ = apigee.ProductName
