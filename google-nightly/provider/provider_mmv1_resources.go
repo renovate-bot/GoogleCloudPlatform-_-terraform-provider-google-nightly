@@ -663,9 +663,9 @@ var handwrittenIAMDatasources = map[string]*schema.Resource{
 }
 
 // Resources
-// Generated resources: 807
+// Generated resources: 808
 // Generated IAM resources: 369
-// Total generated resources: 1176
+// Total generated resources: 1177
 var generatedResources = map[string]*schema.Resource{
 	"google_folder_access_approval_settings":                                     registry.Resource("google_folder_access_approval_settings"),
 	"google_organization_access_approval_settings":                               registry.Resource("google_organization_access_approval_settings"),
@@ -1532,6 +1532,7 @@ var generatedResources = map[string]*schema.Resource{
 	"google_network_connectivity_policy_based_route":                             registry.Resource("google_network_connectivity_policy_based_route"),
 	"google_network_connectivity_regional_endpoint":                              registry.Resource("google_network_connectivity_regional_endpoint"),
 	"google_network_connectivity_spoke":                                          registry.Resource("google_network_connectivity_spoke"),
+	"google_network_connectivity_transport":                                      registry.Resource("google_network_connectivity_transport"),
 	"google_network_connectivity_internal_range":                                 registry.Resource("google_network_connectivity_internal_range"),
 	"google_network_connectivity_service_connection_policy":                      registry.Resource("google_network_connectivity_service_connection_policy"),
 	"google_network_management_connectivity_test":                                registry.Resource("google_network_management_connectivity_test"),
