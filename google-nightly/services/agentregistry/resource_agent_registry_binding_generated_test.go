@@ -57,7 +57,7 @@ func TestAccAgentRegistryBinding_agentRegistryBindingBasicExample(t *testing.T) 
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"binding":       "binding" + randomSuffix,
+		"binding":       "tf-test-ar-binding" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 

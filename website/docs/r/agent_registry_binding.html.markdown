@@ -38,7 +38,7 @@ resource "google_agent_registry_binding" "default" {
   provider = google-nightly
 
   location     = "us-central1"
-  binding_id   = "binding"
+  binding_id   = "ar-binding"
   display_name = "My Binding"
 
   source {
@@ -72,7 +72,7 @@ resource "google_iam_connectors_connector" "default" {
   provider     = google-nightly
 
   location       = "us-central1"
-  connector_id   = "binding"
+  connector_id   = "ar-binding"
 
   connector_type_params {
     ge_connector_params {}
