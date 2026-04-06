@@ -604,7 +604,7 @@ The following arguments are supported:
   Agent in the project will be used.
 
 * `identity_type` -
-  (Optional, [Beta](../guides/provider_versions.html.markdown))
+  (Optional)
   Optional. The identity type to use for the Reasoning Engine.
   If not specified, the `service_account` field will be used if set,
   otherwise the default Vertex AI Reasoning Engine Service Agent in the project will be used.
@@ -614,7 +614,7 @@ The following arguments are supported:
   Possible values are: `SERVICE_ACCOUNT`, `AGENT_IDENTITY`.
 
 * `effective_identity` -
-  (Output, [Beta](../guides/provider_versions.html.markdown))
+  (Output)
   The identity to use for the Reasoning Engine.
 
 
@@ -995,6 +995,18 @@ ReasoningEngine can be imported using any of these accepted formats:
 * `{{region}}/{{name}}`
 * `{{name}}`
 
+In Terraform v1.12.0 and later, use an [`identity` block](https://developer.hashicorp.com/terraform/language/resources/identities) to import ReasoningEngine using identity values. For example:
+
+```tf
+import {
+  identity = {
+    name = "<-optional value->"
+    region = "<-optional value->"
+    project = "<-optional value->"
+  }
+  to = google_vertex_ai_reasoning_engine.default
+}
+```
 
 In Terraform v1.5.0 and later, use an [`import` block](https://developer.hashicorp.com/terraform/language/import) to import ReasoningEngine using one of the formats above. For example:
 
