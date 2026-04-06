@@ -251,7 +251,7 @@ The following arguments are supported:
 
 In addition to the arguments listed above, the following computed attributes are exported:
 
-* `id` - an identifier for the resource with format `projects/{{project}}/locations/{{location}}/services/{{connector_id}}`
+* `id` - an identifier for the resource with format `projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}`
 
 * `deleted` -
   This is set to true if the connector is deleted.
@@ -277,7 +277,7 @@ This resource provides the following
 
 Connector can be imported using any of these accepted formats:
 
-* `projects/{{project}}/locations/{{location}}/services/{{connector_id}}`
+* `projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}`
 * `{{project}}/{{location}}/{{connector_id}}`
 * `{{location}}/{{connector_id}}`
 
@@ -286,7 +286,7 @@ In Terraform v1.5.0 and later, use an [`import` block](https://developer.hashico
 
 ```tf
 import {
-  id = "projects/{{project}}/locations/{{location}}/services/{{connector_id}}"
+  id = "projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}"
   to = google_iam_connectors_connector.default
 }
 ```
@@ -294,7 +294,7 @@ import {
 When using the [`terraform import` command](https://developer.hashicorp.com/terraform/cli/commands/import), Connector can be imported using one of the formats above. For example:
 
 ```
-$ terraform import google_iam_connectors_connector.default projects/{{project}}/locations/{{location}}/services/{{connector_id}}
+$ terraform import google_iam_connectors_connector.default projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}
 $ terraform import google_iam_connectors_connector.default {{project}}/{{location}}/{{connector_id}}
 $ terraform import google_iam_connectors_connector.default {{location}}/{{connector_id}}
 ```

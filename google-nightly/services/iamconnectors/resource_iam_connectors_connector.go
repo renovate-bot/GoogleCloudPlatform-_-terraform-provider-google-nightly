@@ -372,7 +372,7 @@ func resourceIamConnectorsConnectorCreate(d *schema.ResourceData, meta interface
 	}
 
 	// Store the ID now
-	id, err := tpgresource.ReplaceVars(d, config, "projects/{{project}}/locations/{{location}}/services/{{connector_id}}")
+	id, err := tpgresource.ReplaceVars(d, config, "projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}")
 	if err != nil {
 		return fmt.Errorf("Error constructing id: %s", err)
 	}
@@ -677,7 +677,7 @@ func resourceIamConnectorsConnectorDelete(d *schema.ResourceData, meta interface
 func resourceIamConnectorsConnectorImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
 	config := meta.(*transport_tpg.Config)
 	if err := tpgresource.ParseImportId([]string{
-		"^projects/(?P<project>[^/]+)/locations/(?P<location>[^/]+)/services/(?P<connector_id>[^/]+)$",
+		"^projects/(?P<project>[^/]+)/locations/(?P<location>[^/]+)/connectors/(?P<connector_id>[^/]+)$",
 		"^(?P<project>[^/]+)/(?P<location>[^/]+)/(?P<connector_id>[^/]+)$",
 		"^(?P<location>[^/]+)/(?P<connector_id>[^/]+)$",
 	}, d, config); err != nil {
@@ -685,7 +685,7 @@ func resourceIamConnectorsConnectorImport(d *schema.ResourceData, meta interface
 	}
 
 	// Replace import id for the resource id
-	id, err := tpgresource.ReplaceVars(d, config, "projects/{{project}}/locations/{{location}}/services/{{connector_id}}")
+	id, err := tpgresource.ReplaceVars(d, config, "projects/{{project}}/locations/{{location}}/connectors/{{connector_id}}")
 	if err != nil {
 		return nil, fmt.Errorf("Error constructing id: %s", err)
 	}
