@@ -137,6 +137,9 @@ func ResourceAgentRegistryBinding() *schema.Resource {
 				}
 			},
 		},
+		ResourceBehavior: schema.ResourceBehavior{
+			MutableIdentity: true,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"auth_provider_binding": {

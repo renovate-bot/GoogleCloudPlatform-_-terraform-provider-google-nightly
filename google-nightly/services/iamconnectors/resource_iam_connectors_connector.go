@@ -138,6 +138,9 @@ func ResourceIamConnectorsConnector() *schema.Resource {
 				}
 			},
 		},
+		ResourceBehavior: schema.ResourceBehavior{
+			MutableIdentity: true,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"connector_id": {

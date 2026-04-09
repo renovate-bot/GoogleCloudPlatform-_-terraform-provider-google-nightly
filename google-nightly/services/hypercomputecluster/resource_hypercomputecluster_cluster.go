@@ -146,15 +146,17 @@ func ResourceHypercomputeclusterCluster() *schema.Resource {
 				}
 			},
 		},
+		ResourceBehavior: schema.ResourceBehavior{
+			MutableIdentity: true,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"cluster_id": {
 				Type:     schema.TypeString,
 				Required: true,
 				ForceNew: true,
-				Description: `ID of the cluster to create. Must conform to
-[RFC-1034](https://datatracker.ietf.org/doc/html/rfc1034) (lower-case,
-alphanumeric, and at most 63 characters).`,
+				Description: `ID of the cluster to create. Must start with a lowercase letter,
+use only lowercase letters and numbers, and be at most 10 characters long.`,
 			},
 			"location": {
 				Type:        schema.TypeString,
