@@ -55,9 +55,7 @@ import (
 	backupdr "google.golang.org/api/backupdr/v1"
 	"google.golang.org/api/bigquery/v2"
 	"google.golang.org/api/bigtableadmin/v2"
-	"google.golang.org/api/certificatemanager/v1"
 	"google.golang.org/api/cloudbilling/v1"
-	"google.golang.org/api/cloudbuild/v1"
 	"google.golang.org/api/cloudfunctions/v1"
 	cloudidentity "google.golang.org/api/cloudidentity/v1beta1"
 	"google.golang.org/api/cloudkms/v1"
@@ -69,15 +67,11 @@ import (
 	dataflow "google.golang.org/api/dataflow/v1b3"
 	"google.golang.org/api/dataproc/v1"
 	"google.golang.org/api/dns/v1"
-	firebase "google.golang.org/api/firebase/v1beta1"
 	healthcare "google.golang.org/api/healthcare/v1"
 	"google.golang.org/api/iam/v1"
 	iamcredentials "google.golang.org/api/iamcredentials/v1"
 	cloudlogging "google.golang.org/api/logging/v2"
-	"google.golang.org/api/pubsub/v1"
 	runadminv2 "google.golang.org/api/run/v2"
-	runtimeconfig "google.golang.org/api/runtimeconfig/v1beta1"
-	"google.golang.org/api/servicemanagement/v1"
 	"google.golang.org/api/servicenetworking/v1"
 	"google.golang.org/api/serviceusage/v1"
 	"google.golang.org/api/sourcerepo/v1"
@@ -318,8 +312,10 @@ type Config struct {
 	ContainerAttachedBasePath        string
 	DatabaseMigrationServiceBasePath string
 	DataCatalogBasePath              string
+	DataflowBasePath                 string
 	DataformBasePath                 string
 	DataFusionBasePath               string
+	DataLineageBasePath              string
 	DataLossPreventionBasePath       string
 	DataPipelineBasePath             string
 	DataplexBasePath                 string
@@ -362,6 +358,7 @@ type Config struct {
 	IAM3BasePath                     string
 	IAMBetaBasePath                  string
 	IamConnectorsBasePath            string
+	IamCredentialsBasePath           string
 	IAMWorkforcePoolBasePath         string
 	IapBasePath                      string
 	IdentityPlatformBasePath         string
@@ -402,7 +399,7 @@ type Config struct {
 	PubsubLiteBasePath               string
 	RedisBasePath                    string
 	ResourceManagerBasePath          string
-	ResourceManager3BasePath         string
+	ResourceManagerV3BasePath        string
 	RuntimeConfigBasePath            string
 	SaasRuntimeBasePath              string
 	SecretManagerBasePath            string
@@ -427,6 +424,7 @@ type Config struct {
 	StorageInsightsBasePath          string
 	StorageTransferBasePath          string
 	TagsBasePath                     string
+	TagsLocationBasePath             string
 	TpuV2BasePath                    string
 	TranscoderBasePath               string
 	VectorSearchBasePath             string
@@ -437,12 +435,6 @@ type Config struct {
 	WorkflowsBasePath                string
 	WorkloadIdentityBasePath         string
 	WorkstationsBasePath             string
-
-	DataflowBasePath          string
-	IamCredentialsBasePath    string
-	ResourceManagerV3BasePath string
-	IAMBasePath               string
-	TagsLocationBasePath      string
 
 	// DCL
 	ContainerAwsBasePath         string
@@ -514,8 +506,10 @@ const ContainerAnalysisBasePathKey = "ContainerAnalysis"
 const ContainerAttachedBasePathKey = "ContainerAttached"
 const DatabaseMigrationServiceBasePathKey = "DatabaseMigrationService"
 const DataCatalogBasePathKey = "DataCatalog"
+const DataflowBasePathKey = "Dataflow"
 const DataformBasePathKey = "Dataform"
 const DataFusionBasePathKey = "DataFusion"
+const DataLineageBasePathKey = "DataLineage"
 const DataLossPreventionBasePathKey = "DataLossPrevention"
 const DataPipelineBasePathKey = "DataPipeline"
 const DataplexBasePathKey = "Dataplex"
@@ -558,6 +552,7 @@ const IAM2BasePathKey = "IAM2"
 const IAM3BasePathKey = "IAM3"
 const IAMBetaBasePathKey = "IAMBeta"
 const IamConnectorsBasePathKey = "IamConnectors"
+const IamCredentialsBasePathKey = "IamCredentials"
 const IAMWorkforcePoolBasePathKey = "IAMWorkforcePool"
 const IapBasePathKey = "Iap"
 const IdentityPlatformBasePathKey = "IdentityPlatform"
@@ -598,7 +593,7 @@ const PubsubBasePathKey = "Pubsub"
 const PubsubLiteBasePathKey = "PubsubLite"
 const RedisBasePathKey = "Redis"
 const ResourceManagerBasePathKey = "ResourceManager"
-const ResourceManager3BasePathKey = "ResourceManager3"
+const ResourceManagerV3BasePathKey = "ResourceManagerV3"
 const RuntimeConfigBasePathKey = "RuntimeConfig"
 const SaasRuntimeBasePathKey = "SaasRuntime"
 const SecretManagerBasePathKey = "SecretManager"
@@ -623,6 +618,7 @@ const StorageControlBasePathKey = "StorageControl"
 const StorageInsightsBasePathKey = "StorageInsights"
 const StorageTransferBasePathKey = "StorageTransfer"
 const TagsBasePathKey = "Tags"
+const TagsLocationBasePathKey = "TagsLocation"
 const TpuV2BasePathKey = "TpuV2"
 const TranscoderBasePathKey = "Transcoder"
 const VectorSearchBasePathKey = "VectorSearch"
@@ -633,13 +629,8 @@ const WorkbenchBasePathKey = "Workbench"
 const WorkflowsBasePathKey = "Workflows"
 const WorkloadIdentityBasePathKey = "WorkloadIdentity"
 const WorkstationsBasePathKey = "Workstations"
-const DataflowBasePathKey = "Dataflow"
-const IAMBasePathKey = "IAM"
-const IamCredentialsBasePathKey = "IamCredentials"
-const ResourceManagerV3BasePathKey = "ResourceManagerV3"
 const ContainerAwsBasePathKey = "ContainerAws"
 const ContainerAzureBasePathKey = "ContainerAzure"
-const TagsLocationBasePathKey = "TagsLocation"
 
 // Generated product base paths
 var DefaultBasePaths = map[string]string{
@@ -697,8 +688,10 @@ var DefaultBasePaths = map[string]string{
 	ContainerAttachedBasePathKey:        "https://{{location}}-gkemulticloud.googleapis.com/v1/",
 	DatabaseMigrationServiceBasePathKey: "https://datamigration.googleapis.com/v1/",
 	DataCatalogBasePathKey:              "https://datacatalog.googleapis.com/v1beta1/",
+	DataflowBasePathKey:                 "https://dataflow.googleapis.com/v1b3/",
 	DataformBasePathKey:                 "https://dataform.googleapis.com/v1beta1/",
 	DataFusionBasePathKey:               "https://datafusion.googleapis.com/v1beta1/",
+	DataLineageBasePathKey:              "https://datalineage.googleapis.com/v1/",
 	DataLossPreventionBasePathKey:       "https://dlp.googleapis.com/v2/",
 	DataPipelineBasePathKey:             "https://datapipelines.googleapis.com/v1/",
 	DataplexBasePathKey:                 "https://dataplex.googleapis.com/v1/",
@@ -741,6 +734,7 @@ var DefaultBasePaths = map[string]string{
 	IAM3BasePathKey:                     "https://iam.googleapis.com/v3beta/",
 	IAMBetaBasePathKey:                  "https://iam.googleapis.com/v1/",
 	IamConnectorsBasePathKey:            "https://iamconnectors.googleapis.com/v1alpha/",
+	IamCredentialsBasePathKey:           "https://iamcredentials.googleapis.com/v1/",
 	IAMWorkforcePoolBasePathKey:         "https://iam.googleapis.com/v1/",
 	IapBasePathKey:                      "https://iap.googleapis.com/v1/",
 	IdentityPlatformBasePathKey:         "https://identitytoolkit.googleapis.com/v2/",
@@ -781,7 +775,7 @@ var DefaultBasePaths = map[string]string{
 	PubsubLiteBasePathKey:               "https://{{region}}-pubsublite.googleapis.com/v1/admin/",
 	RedisBasePathKey:                    "https://redis.googleapis.com/v1beta1/",
 	ResourceManagerBasePathKey:          "https://cloudresourcemanager.googleapis.com/v1/",
-	ResourceManager3BasePathKey:         "https://cloudresourcemanager.googleapis.com/v3/",
+	ResourceManagerV3BasePathKey:        "https://cloudresourcemanager.googleapis.com/v3/",
 	RuntimeConfigBasePathKey:            "https://runtimeconfig.googleapis.com/v1beta1/",
 	SaasRuntimeBasePathKey:              "https://saasservicemgmt.googleapis.com/v1beta1/",
 	SecretManagerBasePathKey:            "https://secretmanager.googleapis.com/v1/",
@@ -806,6 +800,7 @@ var DefaultBasePaths = map[string]string{
 	StorageInsightsBasePathKey:          "https://storageinsights.googleapis.com/v1/",
 	StorageTransferBasePathKey:          "https://storagetransfer.googleapis.com/v1/",
 	TagsBasePathKey:                     "https://cloudresourcemanager.googleapis.com/v3/",
+	TagsLocationBasePathKey:             "https://{{location}}-cloudresourcemanager.googleapis.com/v3/",
 	TpuV2BasePathKey:                    "https://tpu.googleapis.com/v2alpha1/",
 	TranscoderBasePathKey:               "https://transcoder.googleapis.com/v1/",
 	VectorSearchBasePathKey:             "https://vectorsearch.googleapis.com/v1beta/",
@@ -816,11 +811,6 @@ var DefaultBasePaths = map[string]string{
 	WorkflowsBasePathKey:                "https://workflows.googleapis.com/v1/",
 	WorkloadIdentityBasePathKey:         "https://workloadidentity.googleapis.com/v1/",
 	WorkstationsBasePathKey:             "https://workstations.googleapis.com/v1beta/",
-	DataflowBasePathKey:                 "https://dataflow.googleapis.com/v1b3/",
-	IAMBasePathKey:                      "https://iam.googleapis.com/v1/",
-	IamCredentialsBasePathKey:           "https://iamcredentials.googleapis.com/v1/",
-	ResourceManagerV3BasePathKey:        "https://cloudresourcemanager.googleapis.com/v3/",
-	TagsLocationBasePathKey:             "https://{{location}}-cloudresourcemanager.googleapis.com/v3/",
 	// DCL
 	ContainerAwsBasePathKey:              "https://{{location}}-gkemulticloud.googleapis.com/v1/",
 	ContainerAzureBasePathKey:            "https://{{location}}-gkemulticloud.googleapis.com/v1/",
@@ -889,8 +879,10 @@ var DefaultRepStatus = map[string]bool{
 	ContainerAttachedBasePathKey:        false,
 	DatabaseMigrationServiceBasePathKey: false,
 	DataCatalogBasePathKey:              false,
+	DataflowBasePathKey:                 false,
 	DataformBasePathKey:                 false,
 	DataFusionBasePathKey:               false,
+	DataLineageBasePathKey:              false,
 	DataLossPreventionBasePathKey:       false,
 	DataPipelineBasePathKey:             false,
 	DataplexBasePathKey:                 false,
@@ -933,6 +925,7 @@ var DefaultRepStatus = map[string]bool{
 	IAM3BasePathKey:                     false,
 	IAMBetaBasePathKey:                  false,
 	IamConnectorsBasePathKey:            false,
+	IamCredentialsBasePathKey:           false,
 	IAMWorkforcePoolBasePathKey:         false,
 	IapBasePathKey:                      false,
 	IdentityPlatformBasePathKey:         false,
@@ -973,7 +966,7 @@ var DefaultRepStatus = map[string]bool{
 	PubsubLiteBasePathKey:               false,
 	RedisBasePathKey:                    false,
 	ResourceManagerBasePathKey:          false,
-	ResourceManager3BasePathKey:         false,
+	ResourceManagerV3BasePathKey:        false,
 	RuntimeConfigBasePathKey:            false,
 	SaasRuntimeBasePathKey:              false,
 	SecretManagerBasePathKey:            false,
@@ -998,6 +991,7 @@ var DefaultRepStatus = map[string]bool{
 	StorageInsightsBasePathKey:          false,
 	StorageTransferBasePathKey:          false,
 	TagsBasePathKey:                     false,
+	TagsLocationBasePathKey:             false,
 	TpuV2BasePathKey:                    false,
 	TranscoderBasePathKey:               false,
 	VectorSearchBasePathKey:             false,
@@ -1082,36 +1076,6 @@ func HandleSDKDefaults(d *schema.ResourceData) error {
 
 // Legacy logic for non-registered products.
 func SetEndpointDefaults(d *schema.ResourceData) error {
-	if d.Get(DataflowCustomEndpointEntryKey) == "" {
-		d.Set(DataflowCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_DATAFLOW_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[DataflowBasePathKey]))
-	}
-
-	if d.Get(IamCredentialsCustomEndpointEntryKey) == "" {
-		d.Set(IamCredentialsCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_IAM_CREDENTIALS_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[IamCredentialsBasePathKey]))
-	}
-
-	if d.Get(ResourceManagerV3CustomEndpointEntryKey) == "" {
-		d.Set(ResourceManagerV3CustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_RESOURCE_MANAGER_V3_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[ResourceManagerV3BasePathKey]))
-	}
-
-	if d.Get(IAMCustomEndpointEntryKey) == "" {
-		d.Set(IAMCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_IAM_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[IAMBasePathKey]))
-	}
-
-	if d.Get(TagsLocationCustomEndpointEntryKey) == "" {
-		d.Set(TagsLocationCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_TAGS_LOCATION_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[TagsLocationBasePathKey]))
-	}
-
 	// DCL endpoints - these are hardcoded as a workaround for the DCL not providing a way to
 	// determine base paths at generation time.
 
@@ -1383,20 +1347,6 @@ func (c *Config) getTokenSource(ctx context.Context, clientScopes []string, init
 // while most only want the host URL, some older ones also want the version and some
 // of those "projects" as well. You can find out if this is required by looking at
 // the basePath value in the client library file.
-func (c *Config) NewCertificateManagerClient(userAgent string) *certificatemanager.Service {
-	certificateManagerClientBasePath := RemoveBasePathVersion(c.CertificateManagerBasePath)
-	log.Printf("[INFO] Instantiating Certificate Manager client for path %s", certificateManagerClientBasePath)
-	clientCertificateManager, err := certificatemanager.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client certificate manager: %s", err)
-		return nil
-	}
-	clientCertificateManager.UserAgent = userAgent
-	clientCertificateManager.BasePath = certificateManagerClientBasePath
-
-	return clientCertificateManager
-}
-
 func (c *Config) NewComputeClient(userAgent string) *compute.Service {
 	log.Printf("[INFO] Instantiating GCE client for path %s", c.ComputeBasePath)
 	clientCompute, err := compute.NewService(c.Context, option.WithHTTPClient(c.Client))
@@ -1437,20 +1387,6 @@ func (c *Config) NewDnsClient(userAgent string) *dns.Service {
 	clientDns.BasePath = dnsClientBasePath
 
 	return clientDns
-}
-func (c *Config) NewFirebaseClient(ctx context.Context, userAgent string) *firebase.Service {
-	firebaseClientBasePath := RemoveBasePathVersion(c.FirebaseBasePath)
-	firebaseClientBasePath = strings.ReplaceAll(firebaseClientBasePath, "/firebase/", "")
-	log.Printf("[INFO] Instantiating Google Cloud firebase client for path %s", firebaseClientBasePath)
-	clientFirebase, err := firebase.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client firebase: %s", err)
-		return nil
-	}
-	clientFirebase.UserAgent = userAgent
-	clientFirebase.BasePath = firebaseClientBasePath
-
-	return clientFirebase
 }
 
 func (c *Config) NewKmsClientWithCtx(ctx context.Context, userAgent string) *cloudkms.Service {
@@ -1551,21 +1487,6 @@ func (c *Config) NewBackupDRClient(userAgent string) *backupdr.Service {
 	return clientBackupdrAdmin
 }
 
-func (c *Config) NewPubsubClient(userAgent string) *pubsub.Service {
-	pubsubClientBasePath := RemoveBasePathVersion(c.PubsubBasePath)
-	log.Printf("[INFO] Instantiating Google Pubsub client for path %s", pubsubClientBasePath)
-	wrappedPubsubClient := ClientWithAdditionalRetries(c.Client, PubsubTopicProjectNotReady)
-	clientPubsub, err := pubsub.NewService(c.Context, option.WithHTTPClient(wrappedPubsubClient))
-	if err != nil {
-		log.Printf("[WARN] Error creating client pubsub: %s", err)
-		return nil
-	}
-	clientPubsub.UserAgent = userAgent
-	clientPubsub.BasePath = pubsubClientBasePath
-
-	return clientPubsub
-}
-
 func (c *Config) NewDataflowClient(userAgent string) *dataflow.Service {
 	dataflowClientBasePath := RemoveBasePathVersion(c.DataflowBasePath)
 	log.Printf("[INFO] Instantiating Google Dataflow client for path %s", dataflowClientBasePath)
@@ -1608,22 +1529,8 @@ func (c *Config) NewResourceManagerV3Client(userAgent string) *resourceManagerV3
 	return clientResourceManagerV3
 }
 
-func (c *Config) NewRuntimeconfigClient(userAgent string) *runtimeconfig.Service {
-	runtimeConfigClientBasePath := RemoveBasePathVersion(c.RuntimeConfigBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Runtimeconfig client for path %s", runtimeConfigClientBasePath)
-	clientRuntimeconfig, err := runtimeconfig.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client runtime config: %s", err)
-		return nil
-	}
-	clientRuntimeconfig.UserAgent = userAgent
-	clientRuntimeconfig.BasePath = runtimeConfigClientBasePath
-
-	return clientRuntimeconfig
-}
-
 func (c *Config) NewIamClient(userAgent string) *iam.Service {
-	iamClientBasePath := RemoveBasePathVersion(c.IAMBasePath)
+	iamClientBasePath := RemoveBasePathVersion(c.IAMBetaBasePath)
 	log.Printf("[INFO] Instantiating Google Cloud IAM client for path %s", iamClientBasePath)
 	clientIAM, err := iam.NewService(c.Context, option.WithHTTPClient(c.Client))
 	if err != nil {
@@ -1648,20 +1555,6 @@ func (c *Config) NewIamCredentialsClient(userAgent string) *iamcredentials.Servi
 	clientIamCredentials.BasePath = iamCredentialsClientBasePath
 
 	return clientIamCredentials
-}
-
-func (c *Config) NewServiceManClient(userAgent string) *servicemanagement.APIService {
-	serviceManagementClientBasePath := RemoveBasePathVersion(c.ServiceManagementBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Service Management client for path %s", serviceManagementClientBasePath)
-	clientServiceMan, err := servicemanagement.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client service management: %s", err)
-		return nil
-	}
-	clientServiceMan.UserAgent = userAgent
-	clientServiceMan.BasePath = serviceManagementClientBasePath
-
-	return clientServiceMan
 }
 
 func (c *Config) NewServiceUsageClient(userAgent string) *serviceusage.Service {
@@ -1690,20 +1583,6 @@ func (c *Config) NewBillingClient(userAgent string) *cloudbilling.APIService {
 	clientBilling.BasePath = cloudBillingClientBasePath
 
 	return clientBilling
-}
-
-func (c *Config) NewBuildClient(userAgent string) *cloudbuild.Service {
-	cloudBuildClientBasePath := RemoveBasePathVersion(c.CloudBuildBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Build client for path %s", cloudBuildClientBasePath)
-	clientBuild, err := cloudbuild.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client build: %s", err)
-		return nil
-	}
-	clientBuild.UserAgent = userAgent
-	clientBuild.BasePath = cloudBuildClientBasePath
-
-	return clientBuild
 }
 
 func (c *Config) NewCloudFunctionsClient(userAgent string) *cloudfunctions.Service {
@@ -2202,8 +2081,10 @@ func ConfigureBasePaths(c *Config) {
 	c.ContainerAttachedBasePath = DefaultBasePaths[ContainerAttachedBasePathKey]
 	c.DatabaseMigrationServiceBasePath = DefaultBasePaths[DatabaseMigrationServiceBasePathKey]
 	c.DataCatalogBasePath = DefaultBasePaths[DataCatalogBasePathKey]
+	c.DataflowBasePath = DefaultBasePaths[DataflowBasePathKey]
 	c.DataformBasePath = DefaultBasePaths[DataformBasePathKey]
 	c.DataFusionBasePath = DefaultBasePaths[DataFusionBasePathKey]
+	c.DataLineageBasePath = DefaultBasePaths[DataLineageBasePathKey]
 	c.DataLossPreventionBasePath = DefaultBasePaths[DataLossPreventionBasePathKey]
 	c.DataPipelineBasePath = DefaultBasePaths[DataPipelineBasePathKey]
 	c.DataplexBasePath = DefaultBasePaths[DataplexBasePathKey]
@@ -2246,6 +2127,7 @@ func ConfigureBasePaths(c *Config) {
 	c.IAM3BasePath = DefaultBasePaths[IAM3BasePathKey]
 	c.IAMBetaBasePath = DefaultBasePaths[IAMBetaBasePathKey]
 	c.IamConnectorsBasePath = DefaultBasePaths[IamConnectorsBasePathKey]
+	c.IamCredentialsBasePath = DefaultBasePaths[IamCredentialsBasePathKey]
 	c.IAMWorkforcePoolBasePath = DefaultBasePaths[IAMWorkforcePoolBasePathKey]
 	c.IapBasePath = DefaultBasePaths[IapBasePathKey]
 	c.IdentityPlatformBasePath = DefaultBasePaths[IdentityPlatformBasePathKey]
@@ -2286,7 +2168,7 @@ func ConfigureBasePaths(c *Config) {
 	c.PubsubLiteBasePath = DefaultBasePaths[PubsubLiteBasePathKey]
 	c.RedisBasePath = DefaultBasePaths[RedisBasePathKey]
 	c.ResourceManagerBasePath = DefaultBasePaths[ResourceManagerBasePathKey]
-	c.ResourceManager3BasePath = DefaultBasePaths[ResourceManager3BasePathKey]
+	c.ResourceManagerV3BasePath = DefaultBasePaths[ResourceManagerV3BasePathKey]
 	c.RuntimeConfigBasePath = DefaultBasePaths[RuntimeConfigBasePathKey]
 	c.SaasRuntimeBasePath = DefaultBasePaths[SaasRuntimeBasePathKey]
 	c.SecretManagerBasePath = DefaultBasePaths[SecretManagerBasePathKey]
@@ -2311,6 +2193,7 @@ func ConfigureBasePaths(c *Config) {
 	c.StorageInsightsBasePath = DefaultBasePaths[StorageInsightsBasePathKey]
 	c.StorageTransferBasePath = DefaultBasePaths[StorageTransferBasePathKey]
 	c.TagsBasePath = DefaultBasePaths[TagsBasePathKey]
+	c.TagsLocationBasePath = DefaultBasePaths[TagsLocationBasePathKey]
 	c.TpuV2BasePath = DefaultBasePaths[TpuV2BasePathKey]
 	c.TranscoderBasePath = DefaultBasePaths[TranscoderBasePathKey]
 	c.VectorSearchBasePath = DefaultBasePaths[VectorSearchBasePathKey]
@@ -2321,13 +2204,6 @@ func ConfigureBasePaths(c *Config) {
 	c.WorkflowsBasePath = DefaultBasePaths[WorkflowsBasePathKey]
 	c.WorkloadIdentityBasePath = DefaultBasePaths[WorkloadIdentityBasePathKey]
 	c.WorkstationsBasePath = DefaultBasePaths[WorkstationsBasePathKey]
-
-	// Handwritten Products / Versioned / Atypical Entries
-	c.DataflowBasePath = DefaultBasePaths[DataflowBasePathKey]
-	c.IamCredentialsBasePath = DefaultBasePaths[IamCredentialsBasePathKey]
-	c.ResourceManagerV3BasePath = DefaultBasePaths[ResourceManagerV3BasePathKey]
-	c.IAMBasePath = DefaultBasePaths[IAMBasePathKey]
-	c.TagsLocationBasePath = DefaultBasePaths[TagsLocationBasePathKey]
 
 	// DCL
 	c.ContainerAwsBasePath = DefaultBasePaths[ContainerAwsBasePathKey]

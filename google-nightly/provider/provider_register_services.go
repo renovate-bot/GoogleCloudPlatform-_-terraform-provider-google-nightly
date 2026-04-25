@@ -18,7 +18,7 @@
 package provider
 
 import (
-	// Register services with at least one Magic Modules resource by importing them.
+	// Register all services by importing them.
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/accessapproval"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/accesscontextmanager"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/activedirectory"
@@ -80,6 +80,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/dataflow"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/dataform"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/datafusion"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/datalineage"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/datalossprevention"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/datapipeline"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/dataplex"
@@ -123,6 +124,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iam3"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iambeta"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iamconnectors"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iamcredentials"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iamworkforcepool"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iap"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/identityplatform"
@@ -164,7 +166,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/recaptchaenterprise"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/redis"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager"
-	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager3"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanagerv3"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/runtimeconfig"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/saasruntime"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/secretmanager"
@@ -189,6 +191,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/storageinsights"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/storagetransfer"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/tags"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/tagslocation"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/tpuv2"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/transcoder"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/vectorsearch"
