@@ -51,33 +51,24 @@ import (
 	"golang.org/x/oauth2"
 	googleoauth "golang.org/x/oauth2/google"
 	externalaccount "golang.org/x/oauth2/google/externalaccount"
-	appengine "google.golang.org/api/appengine/v1"
 	backupdr "google.golang.org/api/backupdr/v1"
 	"google.golang.org/api/bigquery/v2"
-	"google.golang.org/api/bigtableadmin/v2"
 	"google.golang.org/api/cloudbilling/v1"
 	"google.golang.org/api/cloudfunctions/v1"
 	cloudidentity "google.golang.org/api/cloudidentity/v1beta1"
 	"google.golang.org/api/cloudkms/v1"
 	"google.golang.org/api/cloudresourcemanager/v1"
 	resourceManagerV3 "google.golang.org/api/cloudresourcemanager/v3"
-	"google.golang.org/api/composer/v1beta1"
 	container "google.golang.org/api/container/v1beta1"
 	dataflow "google.golang.org/api/dataflow/v1b3"
-	"google.golang.org/api/dataproc/v1"
 	"google.golang.org/api/dns/v1"
-	healthcare "google.golang.org/api/healthcare/v1"
 	"google.golang.org/api/iam/v1"
 	iamcredentials "google.golang.org/api/iamcredentials/v1"
 	cloudlogging "google.golang.org/api/logging/v2"
 	runadminv2 "google.golang.org/api/run/v2"
-	"google.golang.org/api/servicenetworking/v1"
 	"google.golang.org/api/serviceusage/v1"
-	"google.golang.org/api/sourcerepo/v1"
-	"google.golang.org/api/spanner/v1"
 	sqladmin "google.golang.org/api/sqladmin/v1beta4"
 	"google.golang.org/api/storage/v1"
-	"google.golang.org/api/storagetransfer/v1"
 	"google.golang.org/api/transport"
 	"google.golang.org/grpc"
 )
@@ -250,7 +241,7 @@ type Config struct {
 	Client             *http.Client
 	Context            context.Context
 	UserAgent          string
-	gRPCLoggingOptions []option.ClientOption
+	GRPCLoggingOptions []option.ClientOption
 
 	TokenSource oauth2.TokenSource
 
@@ -264,10 +255,12 @@ type Config struct {
 	ApiGatewayBasePath               string
 	ApigeeBasePath                   string
 	ApihubBasePath                   string
+	ApikeysBasePath                  string
 	AppEngineBasePath                string
 	ApphubBasePath                   string
 	ArtifactRegistryBasePath         string
 	ArtifactRegistryRepBasePath      string
+	AssuredWorkloadsBasePath         string
 	BackupDRBasePath                 string
 	BeyondcorpBasePath               string
 	BiglakeBasePath                  string
@@ -309,6 +302,8 @@ type Config struct {
 	ContainerBasePath                string
 	ContainerAnalysisBasePath        string
 	ContainerAttachedBasePath        string
+	ContainerAwsBasePath             string
+	ContainerAzureBasePath           string
 	DatabaseMigrationServiceBasePath string
 	DataCatalogBasePath              string
 	DataflowBasePath                 string
@@ -344,6 +339,7 @@ type Config struct {
 	FirebaseExtensionsBasePath       string
 	FirebaseHostingBasePath          string
 	FirebaseRemoteConfigBasePath     string
+	FirebaserulesBasePath            string
 	FirebaseStorageBasePath          string
 	FirestoreBasePath                string
 	GeminiBasePath                   string
@@ -396,6 +392,7 @@ type Config struct {
 	PublicCABasePath                 string
 	PubsubBasePath                   string
 	PubsubLiteBasePath               string
+	RecaptchaEnterpriseBasePath      string
 	RedisBasePath                    string
 	ResourceManagerBasePath          string
 	ResourceManagerV3BasePath        string
@@ -435,15 +432,6 @@ type Config struct {
 	WorkloadIdentityBasePath         string
 	WorkstationsBasePath             string
 
-	// DCL
-	ContainerAwsBasePath         string
-	ContainerAzureBasePath       string
-	ApikeysBasePath              string
-	AssuredWorkloadsBasePath     string
-	CloudResourceManagerBasePath string
-	FirebaserulesBasePath        string
-	RecaptchaEnterpriseBasePath  string
-
 	RequestBatcherServiceUsage *RequestBatcher
 	RequestBatcherIam          *RequestBatcher
 
@@ -459,9 +447,11 @@ const AlloydbBasePathKey = "Alloydb"
 const ApiGatewayBasePathKey = "ApiGateway"
 const ApigeeBasePathKey = "Apigee"
 const ApihubBasePathKey = "Apihub"
+const ApikeysBasePathKey = "Apikeys"
 const AppEngineBasePathKey = "AppEngine"
 const ApphubBasePathKey = "Apphub"
 const ArtifactRegistryBasePathKey = "ArtifactRegistry"
+const AssuredWorkloadsBasePathKey = "AssuredWorkloads"
 const BackupDRBasePathKey = "BackupDR"
 const BeyondcorpBasePathKey = "Beyondcorp"
 const BiglakeBasePathKey = "Biglake"
@@ -503,6 +493,8 @@ const ContactCenterInsightsBasePathKey = "ContactCenterInsights"
 const ContainerBasePathKey = "Container"
 const ContainerAnalysisBasePathKey = "ContainerAnalysis"
 const ContainerAttachedBasePathKey = "ContainerAttached"
+const ContainerAwsBasePathKey = "ContainerAws"
+const ContainerAzureBasePathKey = "ContainerAzure"
 const DatabaseMigrationServiceBasePathKey = "DatabaseMigrationService"
 const DataCatalogBasePathKey = "DataCatalog"
 const DataflowBasePathKey = "Dataflow"
@@ -538,6 +530,7 @@ const FirebaseDataConnectBasePathKey = "FirebaseDataConnect"
 const FirebaseExtensionsBasePathKey = "FirebaseExtensions"
 const FirebaseHostingBasePathKey = "FirebaseHosting"
 const FirebaseRemoteConfigBasePathKey = "FirebaseRemoteConfig"
+const FirebaserulesBasePathKey = "Firebaserules"
 const FirebaseStorageBasePathKey = "FirebaseStorage"
 const FirestoreBasePathKey = "Firestore"
 const GeminiBasePathKey = "Gemini"
@@ -590,6 +583,7 @@ const PrivilegedAccessManagerBasePathKey = "PrivilegedAccessManager"
 const PublicCABasePathKey = "PublicCA"
 const PubsubBasePathKey = "Pubsub"
 const PubsubLiteBasePathKey = "PubsubLite"
+const RecaptchaEnterpriseBasePathKey = "RecaptchaEnterprise"
 const RedisBasePathKey = "Redis"
 const ResourceManagerBasePathKey = "ResourceManager"
 const ResourceManagerV3BasePathKey = "ResourceManagerV3"
@@ -628,8 +622,6 @@ const WorkbenchBasePathKey = "Workbench"
 const WorkflowsBasePathKey = "Workflows"
 const WorkloadIdentityBasePathKey = "WorkloadIdentity"
 const WorkstationsBasePathKey = "Workstations"
-const ContainerAwsBasePathKey = "ContainerAws"
-const ContainerAzureBasePathKey = "ContainerAzure"
 
 // Generated product base paths
 var DefaultBasePaths = map[string]string{
@@ -641,9 +633,11 @@ var DefaultBasePaths = map[string]string{
 	ApiGatewayBasePathKey:               "https://apigateway.googleapis.com/v1beta/",
 	ApigeeBasePathKey:                   "https://apigee.googleapis.com/v1/",
 	ApihubBasePathKey:                   "https://apihub.googleapis.com/v1/",
+	ApikeysBasePathKey:                  "https://apikeys.googleapis.com/v2/",
 	AppEngineBasePathKey:                "https://appengine.googleapis.com/v1beta/",
 	ApphubBasePathKey:                   "https://apphub.googleapis.com/v1/",
 	ArtifactRegistryBasePathKey:         "https://artifactregistry.googleapis.com/v1/",
+	AssuredWorkloadsBasePathKey:         "https://{{location}}-assuredworkloads.googleapis.com/v1/",
 	BackupDRBasePathKey:                 "https://backupdr.googleapis.com/v1/",
 	BeyondcorpBasePathKey:               "https://beyondcorp.googleapis.com/v1/",
 	BiglakeBasePathKey:                  "https://biglake.googleapis.com/v1/",
@@ -685,6 +679,8 @@ var DefaultBasePaths = map[string]string{
 	ContainerBasePathKey:                "https://container.googleapis.com/v1beta1/",
 	ContainerAnalysisBasePathKey:        "https://containeranalysis.googleapis.com/v1beta1/",
 	ContainerAttachedBasePathKey:        "https://{{location}}-gkemulticloud.googleapis.com/v1/",
+	ContainerAwsBasePathKey:             "https://{{location}}-gkemulticloud.googleapis.com/v1/",
+	ContainerAzureBasePathKey:           "https://{{location}}-gkemulticloud.googleapis.com/v1/",
 	DatabaseMigrationServiceBasePathKey: "https://datamigration.googleapis.com/v1/",
 	DataCatalogBasePathKey:              "https://datacatalog.googleapis.com/v1beta1/",
 	DataflowBasePathKey:                 "https://dataflow.googleapis.com/v1b3/",
@@ -720,6 +716,7 @@ var DefaultBasePaths = map[string]string{
 	FirebaseExtensionsBasePathKey:       "https://firebaseextensions.googleapis.com/v1beta/",
 	FirebaseHostingBasePathKey:          "https://firebasehosting.googleapis.com/v1beta1/",
 	FirebaseRemoteConfigBasePathKey:     "https://firebaseremoteconfig.googleapis.com/v1/",
+	FirebaserulesBasePathKey:            "https://firebaserules.googleapis.com/v1/",
 	FirebaseStorageBasePathKey:          "https://firebasestorage.googleapis.com/v1beta/",
 	FirestoreBasePathKey:                "https://firestore.googleapis.com/v1/",
 	GeminiBasePathKey:                   "https://cloudaicompanion.googleapis.com/v1/",
@@ -772,6 +769,7 @@ var DefaultBasePaths = map[string]string{
 	PublicCABasePathKey:                 "https://publicca.googleapis.com/v1beta1/",
 	PubsubBasePathKey:                   "https://pubsub.googleapis.com/v1/",
 	PubsubLiteBasePathKey:               "https://{{region}}-pubsublite.googleapis.com/v1/admin/",
+	RecaptchaEnterpriseBasePathKey:      "https://recaptchaenterprise.googleapis.com/v1/",
 	RedisBasePathKey:                    "https://redis.googleapis.com/v1beta1/",
 	ResourceManagerBasePathKey:          "https://cloudresourcemanager.googleapis.com/v1/",
 	ResourceManagerV3BasePathKey:        "https://cloudresourcemanager.googleapis.com/v3/",
@@ -810,14 +808,6 @@ var DefaultBasePaths = map[string]string{
 	WorkflowsBasePathKey:                "https://workflows.googleapis.com/v1/",
 	WorkloadIdentityBasePathKey:         "https://workloadidentity.googleapis.com/v1/",
 	WorkstationsBasePathKey:             "https://workstations.googleapis.com/v1beta/",
-	// DCL
-	ContainerAwsBasePathKey:              "https://{{location}}-gkemulticloud.googleapis.com/v1/",
-	ContainerAzureBasePathKey:            "https://{{location}}-gkemulticloud.googleapis.com/v1/",
-	ApikeysEndpointEntryKey:              "https://apikeys.googleapis.com/v2/",
-	AssuredWorkloadsEndpointEntryKey:     "https://{{location}}-assuredworkloads.googleapis.com/v1/",
-	CloudResourceManagerEndpointEntryKey: "https://cloudresourcemanager.googleapis.com/",
-	FirebaserulesEndpointEntryKey:        "https://firebaserules.googleapis.com/v1/",
-	RecaptchaEnterpriseEndpointEntryKey:  "https://recaptchaenterprise.googleapis.com/v1/",
 }
 
 // Contains the REP status for each generated product. This allows us to track
@@ -832,9 +822,11 @@ var DefaultRepStatus = map[string]bool{
 	ApiGatewayBasePathKey:               false,
 	ApigeeBasePathKey:                   false,
 	ApihubBasePathKey:                   false,
+	ApikeysBasePathKey:                  false,
 	AppEngineBasePathKey:                false,
 	ApphubBasePathKey:                   false,
 	ArtifactRegistryBasePathKey:         false,
+	AssuredWorkloadsBasePathKey:         false,
 	BackupDRBasePathKey:                 false,
 	BeyondcorpBasePathKey:               false,
 	BiglakeBasePathKey:                  false,
@@ -876,6 +868,8 @@ var DefaultRepStatus = map[string]bool{
 	ContainerBasePathKey:                false,
 	ContainerAnalysisBasePathKey:        false,
 	ContainerAttachedBasePathKey:        false,
+	ContainerAwsBasePathKey:             false,
+	ContainerAzureBasePathKey:           false,
 	DatabaseMigrationServiceBasePathKey: false,
 	DataCatalogBasePathKey:              false,
 	DataflowBasePathKey:                 false,
@@ -911,6 +905,7 @@ var DefaultRepStatus = map[string]bool{
 	FirebaseExtensionsBasePathKey:       false,
 	FirebaseHostingBasePathKey:          false,
 	FirebaseRemoteConfigBasePathKey:     false,
+	FirebaserulesBasePathKey:            false,
 	FirebaseStorageBasePathKey:          false,
 	FirestoreBasePathKey:                false,
 	GeminiBasePathKey:                   false,
@@ -963,6 +958,7 @@ var DefaultRepStatus = map[string]bool{
 	PublicCABasePathKey:                 false,
 	PubsubBasePathKey:                   false,
 	PubsubLiteBasePathKey:               false,
+	RecaptchaEnterpriseBasePathKey:      false,
 	RedisBasePathKey:                    false,
 	ResourceManagerBasePathKey:          false,
 	ResourceManagerV3BasePathKey:        false,
@@ -1073,51 +1069,6 @@ func HandleSDKDefaults(d *schema.ResourceData) error {
 	return nil
 }
 
-// Legacy logic for non-registered products.
-func SetEndpointDefaults(d *schema.ResourceData) error {
-	// DCL endpoints - these are hardcoded as a workaround for the DCL not providing a way to
-	// determine base paths at generation time.
-
-	if d.Get(ContainerAwsCustomEndpointEntryKey) == "" {
-		d.Set(ContainerAwsCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_CONTAINERAWS_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[ContainerAwsBasePathKey]))
-	}
-
-	if d.Get(ContainerAzureCustomEndpointEntryKey) == "" {
-		d.Set(ContainerAzureCustomEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_CONTAINERAZURE_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[ContainerAzureBasePathKey]))
-	}
-	if d.Get(ApikeysEndpointEntryKey) == "" {
-		d.Set(ApikeysEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_APIKEYS_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[ApikeysEndpointEntryKey]))
-	}
-	if d.Get(AssuredWorkloadsEndpointEntryKey) == "" {
-		d.Set(AssuredWorkloadsEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_ASSURED_WORKLOADS_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[AssuredWorkloadsEndpointEntryKey]))
-	}
-	if d.Get(CloudResourceManagerEndpointEntryKey) == "" {
-		d.Set(CloudResourceManagerEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_CLOUD_RESOURCE_MANAGER_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[CloudResourceManagerEndpointEntryKey]))
-	}
-	if d.Get(FirebaserulesEndpointEntryKey) == "" {
-		d.Set(FirebaserulesEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_FIREBASERULES_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[FirebaserulesEndpointEntryKey]))
-	}
-	if d.Get(RecaptchaEnterpriseEndpointEntryKey) == "" {
-		d.Set(RecaptchaEnterpriseEndpointEntryKey, MultiEnvDefault([]string{
-			"GOOGLE_RECAPTCHA_ENTERPRISE_CUSTOM_ENDPOINT",
-		}, DefaultBasePaths[RecaptchaEnterpriseEndpointEntryKey]))
-	}
-
-	return nil
-}
-
 func (c *Config) LoadAndValidate(ctx context.Context) error {
 	if len(c.Scopes) == 0 {
 		c.Scopes = DefaultClientScopes
@@ -1208,8 +1159,8 @@ func (c *Config) LoadAndValidate(ctx context.Context) error {
 	logger.SetOutput(log.Writer())
 
 	alwaysLoggingDeciderClient := func(ctx context.Context, fullMethodName string) bool { return true }
-	c.gRPCLoggingOptions = append(
-		c.gRPCLoggingOptions, option.WithGRPCDialOption(grpc.WithUnaryInterceptor(
+	c.GRPCLoggingOptions = append(
+		c.GRPCLoggingOptions, option.WithGRPCDialOption(grpc.WithUnaryInterceptor(
 			grpc_logrus.PayloadUnaryClientInterceptor(logrus.NewEntry(logger), alwaysLoggingDeciderClient))),
 		option.WithGRPCDialOption(grpc.WithStreamInterceptor(
 			grpc_logrus.PayloadStreamClientInterceptor(logrus.NewEntry(logger), alwaysLoggingDeciderClient))),
@@ -1585,20 +1536,6 @@ func (c *Config) NewCloudFunctionsClient(userAgent string) *cloudfunctions.Servi
 	return clientCloudFunctions
 }
 
-func (c *Config) NewSourceRepoClient(userAgent string) *sourcerepo.Service {
-	sourceRepoClientBasePath := RemoveBasePathVersion(c.SourceRepoBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Source Repo client for path %s", sourceRepoClientBasePath)
-	clientSourceRepo, err := sourcerepo.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client source repo: %s", err)
-		return nil
-	}
-	clientSourceRepo.UserAgent = userAgent
-	clientSourceRepo.BasePath = sourceRepoClientBasePath
-
-	return clientSourceRepo
-}
-
 func (c *Config) NewBigQueryClient(userAgent string) *bigquery.Service {
 	bigQueryClientBasePath := c.BigQueryBasePath
 	log.Printf("[INFO] Instantiating Google Cloud BigQuery client for path %s", bigQueryClientBasePath)
@@ -1614,104 +1551,6 @@ func (c *Config) NewBigQueryClient(userAgent string) *bigquery.Service {
 	return clientBigQuery
 }
 
-func (c *Config) NewSpannerClient(userAgent string) *spanner.Service {
-	spannerClientBasePath := RemoveBasePathVersion(c.SpannerBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Spanner client for path %s", spannerClientBasePath)
-	clientSpanner, err := spanner.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client source repo: %s", err)
-		return nil
-	}
-	clientSpanner.UserAgent = userAgent
-	clientSpanner.BasePath = spannerClientBasePath
-
-	return clientSpanner
-}
-
-func (c *Config) NewDataprocClient(userAgent string) *dataproc.Service {
-	dataprocClientBasePath := RemoveBasePathVersion(c.DataprocBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Dataproc client for path %s", dataprocClientBasePath)
-	clientDataproc, err := dataproc.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client dataproc: %s", err)
-		return nil
-	}
-	clientDataproc.UserAgent = userAgent
-	clientDataproc.BasePath = dataprocClientBasePath
-
-	return clientDataproc
-}
-
-func (c *Config) NewAppEngineClient(userAgent string) *appengine.APIService {
-	appEngineClientBasePath := RemoveBasePathVersion(c.AppEngineBasePath)
-	log.Printf("[INFO] Instantiating App Engine client for path %s", appEngineClientBasePath)
-	clientAppEngine, err := appengine.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client appengine: %s", err)
-		return nil
-	}
-	clientAppEngine.UserAgent = userAgent
-	clientAppEngine.BasePath = appEngineClientBasePath
-
-	return clientAppEngine
-}
-
-func (c *Config) NewComposerClient(userAgent string) *composer.Service {
-	composerClientBasePath := RemoveBasePathVersion(c.ComposerBasePath)
-	log.Printf("[INFO] Instantiating Cloud Composer client for path %s", composerClientBasePath)
-	clientComposer, err := composer.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client composer: %s", err)
-		return nil
-	}
-	clientComposer.UserAgent = userAgent
-	clientComposer.BasePath = composerClientBasePath
-
-	return clientComposer
-}
-
-func (c *Config) NewServiceNetworkingClient(userAgent string) *servicenetworking.APIService {
-	serviceNetworkingClientBasePath := RemoveBasePathVersion(c.ServiceNetworkingBasePath)
-	log.Printf("[INFO] Instantiating Service Networking client for path %s", serviceNetworkingClientBasePath)
-	clientServiceNetworking, err := servicenetworking.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client service networking: %s", err)
-		return nil
-	}
-	clientServiceNetworking.UserAgent = userAgent
-	clientServiceNetworking.BasePath = serviceNetworkingClientBasePath
-
-	return clientServiceNetworking
-}
-
-func (c *Config) NewStorageTransferClient(userAgent string) *storagetransfer.Service {
-	storageTransferClientBasePath := RemoveBasePathVersion(c.StorageTransferBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Storage Transfer client for path %s", storageTransferClientBasePath)
-	clientStorageTransfer, err := storagetransfer.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client storage transfer: %s", err)
-		return nil
-	}
-	clientStorageTransfer.UserAgent = userAgent
-	clientStorageTransfer.BasePath = storageTransferClientBasePath
-
-	return clientStorageTransfer
-}
-
-func (c *Config) NewHealthcareClient(userAgent string) *healthcare.Service {
-	healthcareClientBasePath := RemoveBasePathVersion(c.HealthcareBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud Healthcare client for path %s", healthcareClientBasePath)
-	clientHealthcare, err := healthcare.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client healthcare: %s", err)
-		return nil
-	}
-	clientHealthcare.UserAgent = userAgent
-	clientHealthcare.BasePath = healthcareClientBasePath
-
-	return clientHealthcare
-}
-
 func (c *Config) NewCloudIdentityClient(userAgent string) *cloudidentity.Service {
 	cloudidentityClientBasePath := RemoveBasePathVersion(c.CloudIdentityBasePath)
 	log.Printf("[INFO] Instantiating Google Cloud CloudIdentity client for path %s", cloudidentityClientBasePath)
@@ -1724,53 +1563,6 @@ func (c *Config) NewCloudIdentityClient(userAgent string) *cloudidentity.Service
 	clientCloudIdentity.BasePath = cloudidentityClientBasePath
 
 	return clientCloudIdentity
-}
-
-func (c *Config) BigTableClientFactory(userAgent string) *BigtableClientFactory {
-	bigtableClientFactory := &BigtableClientFactory{
-		UserAgent:           userAgent,
-		TokenSource:         c.TokenSource,
-		gRPCLoggingOptions:  c.gRPCLoggingOptions,
-		BillingProject:      c.BillingProject,
-		UserProjectOverride: c.UserProjectOverride,
-	}
-
-	return bigtableClientFactory
-}
-
-// Unlike other clients, the Bigtable Admin client doesn't use a single
-// service. Instead, there are several distinct services created off
-// the base service object. To imitate most other handwritten clients,
-// we expose those directly instead of providing the `Service` object
-// as a factory.
-func (c *Config) NewBigTableProjectsInstancesClient(userAgent string) *bigtableadmin.ProjectsInstancesService {
-	bigtableAdminBasePath := RemoveBasePathVersion(c.BigtableBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud BigtableAdmin for path %s", bigtableAdminBasePath)
-	clientBigtable, err := bigtableadmin.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client big table projects instances: %s", err)
-		return nil
-	}
-	clientBigtable.UserAgent = userAgent
-	clientBigtable.BasePath = bigtableAdminBasePath
-	clientBigtableProjectsInstances := bigtableadmin.NewProjectsInstancesService(clientBigtable)
-
-	return clientBigtableProjectsInstances
-}
-
-func (c *Config) NewBigTableProjectsInstancesTablesClient(userAgent string) *bigtableadmin.ProjectsInstancesTablesService {
-	bigtableAdminBasePath := RemoveBasePathVersion(c.BigtableBasePath)
-	log.Printf("[INFO] Instantiating Google Cloud BigtableAdmin for path %s", bigtableAdminBasePath)
-	clientBigtable, err := bigtableadmin.NewService(c.Context, option.WithHTTPClient(c.Client))
-	if err != nil {
-		log.Printf("[WARN] Error creating client projects instances tables: %s", err)
-		return nil
-	}
-	clientBigtable.UserAgent = userAgent
-	clientBigtable.BasePath = bigtableAdminBasePath
-	clientBigtableProjectsInstancesTables := bigtableadmin.NewProjectsInstancesTablesService(clientBigtable)
-
-	return clientBigtableProjectsInstancesTables
 }
 
 func (c *Config) NewCloudRunV2Client(userAgent string) *runadminv2.Service {
@@ -2021,9 +1813,11 @@ func ConfigureBasePaths(c *Config) {
 	c.ApiGatewayBasePath = DefaultBasePaths[ApiGatewayBasePathKey]
 	c.ApigeeBasePath = DefaultBasePaths[ApigeeBasePathKey]
 	c.ApihubBasePath = DefaultBasePaths[ApihubBasePathKey]
+	c.ApikeysBasePath = DefaultBasePaths[ApikeysBasePathKey]
 	c.AppEngineBasePath = DefaultBasePaths[AppEngineBasePathKey]
 	c.ApphubBasePath = DefaultBasePaths[ApphubBasePathKey]
 	c.ArtifactRegistryBasePath = DefaultBasePaths[ArtifactRegistryBasePathKey]
+	c.AssuredWorkloadsBasePath = DefaultBasePaths[AssuredWorkloadsBasePathKey]
 	c.BackupDRBasePath = DefaultBasePaths[BackupDRBasePathKey]
 	c.BeyondcorpBasePath = DefaultBasePaths[BeyondcorpBasePathKey]
 	c.BiglakeBasePath = DefaultBasePaths[BiglakeBasePathKey]
@@ -2065,6 +1859,8 @@ func ConfigureBasePaths(c *Config) {
 	c.ContainerBasePath = DefaultBasePaths[ContainerBasePathKey]
 	c.ContainerAnalysisBasePath = DefaultBasePaths[ContainerAnalysisBasePathKey]
 	c.ContainerAttachedBasePath = DefaultBasePaths[ContainerAttachedBasePathKey]
+	c.ContainerAwsBasePath = DefaultBasePaths[ContainerAwsBasePathKey]
+	c.ContainerAzureBasePath = DefaultBasePaths[ContainerAzureBasePathKey]
 	c.DatabaseMigrationServiceBasePath = DefaultBasePaths[DatabaseMigrationServiceBasePathKey]
 	c.DataCatalogBasePath = DefaultBasePaths[DataCatalogBasePathKey]
 	c.DataflowBasePath = DefaultBasePaths[DataflowBasePathKey]
@@ -2100,6 +1896,7 @@ func ConfigureBasePaths(c *Config) {
 	c.FirebaseExtensionsBasePath = DefaultBasePaths[FirebaseExtensionsBasePathKey]
 	c.FirebaseHostingBasePath = DefaultBasePaths[FirebaseHostingBasePathKey]
 	c.FirebaseRemoteConfigBasePath = DefaultBasePaths[FirebaseRemoteConfigBasePathKey]
+	c.FirebaserulesBasePath = DefaultBasePaths[FirebaserulesBasePathKey]
 	c.FirebaseStorageBasePath = DefaultBasePaths[FirebaseStorageBasePathKey]
 	c.FirestoreBasePath = DefaultBasePaths[FirestoreBasePathKey]
 	c.GeminiBasePath = DefaultBasePaths[GeminiBasePathKey]
@@ -2152,6 +1949,7 @@ func ConfigureBasePaths(c *Config) {
 	c.PublicCABasePath = DefaultBasePaths[PublicCABasePathKey]
 	c.PubsubBasePath = DefaultBasePaths[PubsubBasePathKey]
 	c.PubsubLiteBasePath = DefaultBasePaths[PubsubLiteBasePathKey]
+	c.RecaptchaEnterpriseBasePath = DefaultBasePaths[RecaptchaEnterpriseBasePathKey]
 	c.RedisBasePath = DefaultBasePaths[RedisBasePathKey]
 	c.ResourceManagerBasePath = DefaultBasePaths[ResourceManagerBasePathKey]
 	c.ResourceManagerV3BasePath = DefaultBasePaths[ResourceManagerV3BasePathKey]
@@ -2190,15 +1988,6 @@ func ConfigureBasePaths(c *Config) {
 	c.WorkflowsBasePath = DefaultBasePaths[WorkflowsBasePathKey]
 	c.WorkloadIdentityBasePath = DefaultBasePaths[WorkloadIdentityBasePathKey]
 	c.WorkstationsBasePath = DefaultBasePaths[WorkstationsBasePathKey]
-
-	// DCL
-	c.ContainerAwsBasePath = DefaultBasePaths[ContainerAwsBasePathKey]
-	c.ContainerAzureBasePath = DefaultBasePaths[ContainerAzureBasePathKey]
-	c.ApikeysBasePath = DefaultBasePaths[ApikeysEndpointEntryKey]
-	c.AssuredWorkloadsBasePath = DefaultBasePaths[AssuredWorkloadsEndpointEntryKey]
-	c.CloudResourceManagerBasePath = DefaultBasePaths[CloudResourceManagerEndpointEntryKey]
-	c.FirebaserulesBasePath = DefaultBasePaths[FirebaserulesEndpointEntryKey]
-	c.RecaptchaEnterpriseBasePath = DefaultBasePaths[RecaptchaEnterpriseEndpointEntryKey]
 }
 
 func GetCurrentUserEmail(config *Config, userAgent string) (string, error) {
