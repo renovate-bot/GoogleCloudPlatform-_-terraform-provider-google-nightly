@@ -541,32 +541,9 @@ func resourceIamConnectorsConnectorRead(d *schema.ResourceData, meta interface{}
 		return fmt.Errorf("Error reading Connector: %s", err)
 	}
 
-	if err := d.Set("description", flattenIamConnectorsConnectorDescription(res["description"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("allowed_scopes", flattenIamConnectorsConnectorAllowedScopes(res["allowedScopes"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("blocked_scopes", flattenIamConnectorsConnectorBlockedScopes(res["blockedScopes"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("connector_type_params", flattenIamConnectorsConnectorConnectorTypeParams(res["connectorTypeParams"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("state", flattenIamConnectorsConnectorState(res["state"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("deleted", flattenIamConnectorsConnectorDeleted(res["deleted"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("create_time", flattenIamConnectorsConnectorCreateTime(res["createTime"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("update_time", flattenIamConnectorsConnectorUpdateTime(res["updateTime"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
-	}
-	if err := d.Set("expire_time", flattenIamConnectorsConnectorExpireTime(res["expireTime"], d, config)); err != nil {
-		return fmt.Errorf("Error reading Connector: %s", err)
+	err = ResourceIamConnectorsConnectorFlatten(d, meta, res, config, project, userAgent, billingProject, url, headers)
+	if err != nil {
+		return err
 	}
 
 	identity, err := d.Identity()
@@ -1207,4 +1184,38 @@ func expandIamConnectorsConnectorWorkloadIds(v interface{}, d tpgresource.Terraf
 
 func expandIamConnectorsConnectorExpireTime(v interface{}, d tpgresource.TerraformResourceData, config *transport_tpg.Config) (interface{}, error) {
 	return v, nil
+}
+
+func ResourceIamConnectorsConnectorFlatten(d *schema.ResourceData, meta interface{}, res map[string]interface{}, config *transport_tpg.Config, project string, userAgent string, billingProject string, url string, headers http.Header) error {
+	var err error
+
+	if err = d.Set("description", flattenIamConnectorsConnectorDescription(res["description"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("allowed_scopes", flattenIamConnectorsConnectorAllowedScopes(res["allowedScopes"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("blocked_scopes", flattenIamConnectorsConnectorBlockedScopes(res["blockedScopes"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("connector_type_params", flattenIamConnectorsConnectorConnectorTypeParams(res["connectorTypeParams"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("state", flattenIamConnectorsConnectorState(res["state"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("deleted", flattenIamConnectorsConnectorDeleted(res["deleted"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("create_time", flattenIamConnectorsConnectorCreateTime(res["createTime"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("update_time", flattenIamConnectorsConnectorUpdateTime(res["updateTime"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+	if err = d.Set("expire_time", flattenIamConnectorsConnectorExpireTime(res["expireTime"], d, config)); err != nil {
+		return fmt.Errorf("Error reading Connector: %s", err)
+	}
+
+	return nil
 }
