@@ -25,6 +25,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
+	tpgcompute "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/compute"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanagerv3"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/sweeper"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
@@ -81,6 +82,7 @@ func testSweepFolder(region string) error {
 				continue
 			}
 			log.Printf("[INFO][SWEEPER_LOG] Sweeping Folder id: %s, name: %s", folder.Name, folder.DisplayName)
+			cleanupFolderContent(config, folder.Name)
 			_, err := config.NewResourceManagerV3Client(config.UserAgent).Folders.Delete(folder.Name).Do()
 			if err != nil {
 				if isCapabilityError(err) {
@@ -95,7 +97,7 @@ func testSweepFolder(region string) error {
 
 					// 3. Handle Liens on Management Project
 					if folder.ManagementProject != "" {
-						cleanupLiens(svc, folder.ManagementProject)
+						cleanupLiens(svc, folder.ManagementProject, config)
 					}
 
 					// 4. Disable configured capability
@@ -144,7 +146,7 @@ func isCapabilityError(err error) bool {
 	return false
 }
 
-func cleanupLiens(svc *resourceManagerV3.Service, project string) {
+func cleanupLiens(svc *resourceManagerV3.Service, project string, config *transport_tpg.Config) {
 	log.Printf("[INFO][SWEEPER_LOG]Checking liens on %s...\n", project)
 	resp, err := svc.Liens.List().Parent(project).Do()
 	if err != nil {
@@ -152,6 +154,15 @@ func cleanupLiens(svc *resourceManagerV3.Service, project string) {
 		return
 	}
 	for _, l := range resp.Liens {
+		if l.Origin == "xpn.googleapis.com" {
+			log.Printf("[INFO][SWEEPER_LOG] Found XPN lien on %s. Disabling XPN host...", project)
+			projectId := strings.TrimPrefix(project, "projects/")
+			_, err := tpgcompute.NewClient(config, config.UserAgent).Projects.DisableXpnHost(projectId).Do()
+			if err != nil {
+				log.Printf("[INFO][SWEEPER_LOG] Error disabling XPN host for %s: %s", projectId, err)
+			}
+		}
+
 		log.Printf("[INFO][SWEEPER_LOG]Deleting lien: %s\n", l.Name)
 		_, err = svc.Liens.Delete(l.Name).Do()
 
@@ -205,5 +216,60 @@ func disableCapability(folderName string) {
 
 	if err != nil {
 		log.Printf("[INFO][SWEEPER_LOG] Error for disabling Capability operation: %s, err: %s", capName, err)
+	}
+}
+
+func cleanupFolderContent(config *transport_tpg.Config, folderName string) {
+	log.Printf("[INFO][SWEEPER_LOG] Cleaning up content of folder %s", folderName)
+
+	folderId := strings.TrimPrefix(folderName, "folders/")
+
+	// 1. Delete projects in folder
+	pSvc := config.NewResourceManagerClient(config.UserAgent)
+	fSvc := config.NewResourceManagerV3Client(config.UserAgent)
+	projectFilter := fmt.Sprintf("parent.id:%s -lifecycleState:DELETE_REQUESTED", folderId)
+
+	token := ""
+	for paginate := true; paginate; {
+		found, err := pSvc.Projects.List().Filter(projectFilter).PageToken(token).Do()
+		if err != nil {
+			log.Printf("[INFO][SWEEPER_LOG] error listing projects in folder %s: %s", folderName, err)
+			break
+		}
+		for _, project := range found.Projects {
+			log.Printf("[INFO][SWEEPER_LOG] Deleting project %s in folder %s", project.ProjectId, folderName)
+
+			// Cleanup liens before deleting project
+			cleanupLiens(fSvc, "projects/"+project.ProjectId, config)
+
+			_, err := pSvc.Projects.Delete(project.ProjectId).Do()
+			if err != nil {
+				log.Printf("[INFO][SWEEPER_LOG] Error deleting project %s: %s", project.ProjectId, err)
+			}
+		}
+		token = found.NextPageToken
+		paginate = token != ""
+	}
+
+	// 2. Delete sub-folders
+	fToken := ""
+	for fPaginate := true; fPaginate; {
+		found, err := fSvc.Folders.List().Parent(folderName).PageToken(fToken).Do()
+		if err != nil {
+			log.Printf("[INFO][SWEEPER_LOG] error listing sub-folders in %s: %s", folderName, err)
+			break
+		}
+		for _, sf := range found.Folders {
+			log.Printf("[INFO][SWEEPER_LOG] Recursively cleaning up sub-folder %s", sf.Name)
+			cleanupFolderContent(config, sf.Name) // Recursive call to clean content
+
+			log.Printf("[INFO][SWEEPER_LOG] Deleting sub-folder %s", sf.Name)
+			_, err := fSvc.Folders.Delete(sf.Name).Do()
+			if err != nil {
+				log.Printf("[INFO][SWEEPER_LOG] Error deleting sub-folder %s: %s", sf.Name, err)
+			}
+		}
+		fToken = found.NextPageToken
+		fPaginate = fToken != ""
 	}
 }
