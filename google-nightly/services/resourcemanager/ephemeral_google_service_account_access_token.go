@@ -28,12 +28,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwutils"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwvalidators"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 	"google.golang.org/api/iamcredentials/v1"
 )
 
 var _ ephemeral.EphemeralResource = &googleEphemeralServiceAccountAccessToken{}
+
+func init() {
+	registry.FrameworkEphemeralResource{
+		Name:        "google_service_account_access_token",
+		ProductName: "resourcemanager",
+		Func:        GoogleEphemeralServiceAccountAccessToken,
+	}.Register()
+}
 
 func GoogleEphemeralServiceAccountAccessToken() ephemeral.EphemeralResource {
 	return &googleEphemeralServiceAccountAccessToken{}

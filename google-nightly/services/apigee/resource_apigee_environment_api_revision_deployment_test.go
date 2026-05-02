@@ -25,6 +25,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/apigee"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 )
@@ -326,7 +327,7 @@ func testAccCheckApigeeEnvironmentApiRevisionDeploymentDestroyProducer(t *testin
 			config := acctest.GoogleProviderConfig(t)
 
 			url, err := tpgresource.ReplaceVarsForTest(config, rs,
-				"{{ApigeeBasePath}}organizations/{{org_id}}/environments/{{environment}}/apis/{{api}}/revisions/{{revision}}/deployments")
+				transport_tpg.BaseUrl(apigee.Product, config)+"organizations/{{org_id}}/environments/{{environment}}/apis/{{api}}/revisions/{{revision}}/deployments")
 			if err != nil {
 				return err
 			}

@@ -30,6 +30,7 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwmodels"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwresource"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwtransport"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 )
 
@@ -38,6 +39,14 @@ var (
 	_ datasource.DataSource              = &GoogleFirebaseAdminSdkConfigDataSource{}
 	_ datasource.DataSourceWithConfigure = &GoogleFirebaseAdminSdkConfigDataSource{}
 )
+
+func init() {
+	registry.FrameworkDataSource{
+		Name:        "google_firebase_admin_sdk_config",
+		ProductName: "firebase",
+		Func:        NewGoogleFirebaseAdminSdkConfigDataSource,
+	}.Register()
+}
 
 func NewGoogleFirebaseAdminSdkConfigDataSource() datasource.DataSource {
 	return &GoogleFirebaseAdminSdkConfigDataSource{}

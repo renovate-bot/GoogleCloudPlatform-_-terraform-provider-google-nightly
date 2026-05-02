@@ -27,6 +27,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
+	rmClient "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager/client"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
@@ -439,7 +440,7 @@ func RetrieveServiceNetworkingNetworkName(d *schema.ResourceData, config *transp
 		billingProject = bp
 	}
 
-	getProjectCall := config.NewResourceManagerClient(userAgent).Projects.Get(pid)
+	getProjectCall := rmClient.NewClient(config, userAgent).Projects.Get(pid)
 	if config.UserProjectOverride {
 		getProjectCall.Header().Add("X-Goog-User-Project", billingProject)
 	}

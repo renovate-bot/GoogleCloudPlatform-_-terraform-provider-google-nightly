@@ -41,6 +41,7 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwresource"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwtransport"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwvalidators"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/pubsub"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 )
@@ -51,6 +52,14 @@ var (
 	_ resource.ResourceWithImportState  = &storageNotificationResource{}
 	_ resource.ResourceWithUpgradeState = &storageNotificationResource{}
 )
+
+func init() {
+	registry.FrameworkResource{
+		Name:        "google_storage_notification",
+		ProductName: "storage",
+		Func:        NewStorageNotificationResource,
+	}.Register()
+}
 
 func NewStorageNotificationResource() resource.Resource {
 	return &storageNotificationResource{}

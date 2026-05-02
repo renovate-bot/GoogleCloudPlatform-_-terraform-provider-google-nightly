@@ -32,9 +32,18 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
 	"google.golang.org/api/iam/v1"
 
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 )
+
+func init() {
+	registry.FrameworkListResource{
+		Name:        "google_service_account",
+		ProductName: "resourcemanager",
+		Func:        NewGoogleServiceAccountListResource,
+	}.Register()
+}
 
 type GoogleServiceAccountListResource struct {
 	tpgresource.ListResourceMetadata

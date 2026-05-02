@@ -30,6 +30,7 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwmodels"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwresource"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/fwtransport"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/registry"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 )
 
@@ -38,6 +39,14 @@ var (
 	_ datasource.DataSource              = &GoogleFirebaseAppleAppConfigDataSource{}
 	_ datasource.DataSourceWithConfigure = &GoogleFirebaseAppleAppConfigDataSource{}
 )
+
+func init() {
+	registry.FrameworkDataSource{
+		Name:        "google_firebase_apple_app_config",
+		ProductName: "firebase",
+		Func:        NewGoogleFirebaseAppleAppConfigDataSource,
+	}.Register()
+}
 
 func NewGoogleFirebaseAppleAppConfigDataSource() datasource.DataSource {
 	return &GoogleFirebaseAppleAppConfigDataSource{}
