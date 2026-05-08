@@ -59,7 +59,7 @@ func TestAccIamConnectorsConnector_iamConnectorsConnectorBasicExample(t *testing
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"connector":     "connector" + randomSuffix,
+		"connector":     "tf-test-connector" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 
@@ -112,7 +112,7 @@ func TestAccIamConnectorsConnector_iamConnectorsConnectorGeminiEnterpriseExample
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"connector":     "connector" + randomSuffix,
+		"connector":     "tf-test-connector" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 
@@ -165,7 +165,7 @@ func TestAccIamConnectorsConnector_iamConnectorsConnectorThreeLeggedExample(t *t
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"connector":     "connector" + randomSuffix,
+		"connector":     "tf-test-connector" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 
@@ -224,7 +224,7 @@ func TestAccIamConnectorsConnector_iamConnectorsConnectorTwoLeggedExample(t *tes
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"connector":     "connector" + randomSuffix,
+		"connector":     "tf-test-connector" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 

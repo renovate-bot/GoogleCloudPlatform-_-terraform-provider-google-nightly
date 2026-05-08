@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/compute"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
+	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 )
 
 func TestAccComputeTargetPool_basic(t *testing.T) {
@@ -162,8 +162,14 @@ func testAccCheckComputeTargetPoolDestroyProducer(t *testing.T) func(s *terrafor
 				continue
 			}
 
-			_, err := compute.NewClient(config, config.UserAgent).TargetPools.Get(
-				config.Project, config.Region, rs.Primary.Attributes["name"]).Do()
+			url := fmt.Sprintf("%sprojects/%s/regions/%s/targetPools/%s", config.ComputeBasePath, config.Project, config.Region, rs.Primary.Attributes["name"])
+			_, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
+				Config:    config,
+				Method:    "GET",
+				Project:   config.Project,
+				RawURL:    url,
+				UserAgent: config.UserAgent,
+			})
 			if err == nil {
 				return fmt.Errorf("TargetPool still exists")
 			}
@@ -186,13 +192,19 @@ func testAccCheckComputeTargetPoolExists(t *testing.T, n string) resource.TestCh
 
 		config := acctest.GoogleProviderConfig(t)
 
-		found, err := compute.NewClient(config, config.UserAgent).TargetPools.Get(
-			config.Project, config.Region, rs.Primary.Attributes["name"]).Do()
+		url := fmt.Sprintf("%sprojects/%s/regions/%s/targetPools/%s", config.ComputeBasePath, config.Project, config.Region, rs.Primary.Attributes["name"])
+		found, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
+			Config:    config,
+			Method:    "GET",
+			Project:   config.Project,
+			RawURL:    url,
+			UserAgent: config.UserAgent,
+		})
 		if err != nil {
 			return err
 		}
 
-		if found.Name != rs.Primary.Attributes["name"] {
+		if found["name"] != rs.Primary.Attributes["name"] {
 			return fmt.Errorf("TargetPool not found")
 		}
 

@@ -15,7 +15,7 @@
 //
 // ----------------------------------------------------------------------------
 
-package cloudrun_test
+package compute_test
 
 import (
 	"fmt"
@@ -30,7 +30,7 @@ import (
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/cloudrun"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/compute"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
@@ -49,36 +49,36 @@ var (
 	_ = tpgresource.SetLabels
 	_ = transport_tpg.Config{}
 	_ = googleapi.Error{}
-	_ = cloudrun.Product
+	_ = compute.Product
 )
 
-func TestAccCloudRunDomainMapping_cloudRunDomainMappingBasicExample(t *testing.T) {
+func TestAccComputeRegionInstantSnapshot_regionInstantSnapshotBasicExample(t *testing.T) {
 	t.Parallel()
 
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"namespace":              envvar.GetTestProjectFromEnv(),
-		"cloud_run_service_name": "tf-test-cloudrun-srv" + randomSuffix,
-		"random_suffix":          randomSuffix,
+		"disk_name":     "tf-test-example-disk" + randomSuffix,
+		"instance_name": "tf-test-instant-snapshot" + randomSuffix,
+		"random_suffix": randomSuffix,
 	}
 
 	acctest.VcrTest(t, resource.TestCase{
 		PreCheck:                 func() { acctest.AccTestPreCheck(t) },
 		ProtoV5ProviderFactories: acctest.ProtoV5ProviderFactories(t),
-		CheckDestroy:             testAccCheckCloudRunDomainMappingDestroyProducer(t),
+		CheckDestroy:             testAccCheckComputeRegionInstantSnapshotDestroyProducer(t),
 		Steps: []resource.TestStep{
 			{
-				Config: testAccCloudRunDomainMapping_cloudRunDomainMappingBasicExample(context),
+				Config: testAccComputeRegionInstantSnapshot_regionInstantSnapshotBasicExample(context),
 			},
 			{
-				ResourceName:            "google_cloud_run_domain_mapping.default",
+				ResourceName:            "google_compute_region_instant_snapshot.default",
 				ImportState:             true,
 				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"location", "metadata.0.annotations", "metadata.0.labels", "metadata.0.terraform_labels", "name"},
+				ImportStateVerifyIgnore: []string{"labels", "params", "region", "source_disk", "terraform_labels"},
 			},
 			{
-				ResourceName:       "google_cloud_run_domain_mapping.default",
+				ResourceName:       "google_compute_region_instant_snapshot.default",
 				RefreshState:       true,
 				ExpectNonEmptyPlan: true,
 				ImportStateKind:    resource.ImportBlockWithResourceIdentity,
@@ -87,56 +87,36 @@ func TestAccCloudRunDomainMapping_cloudRunDomainMappingBasicExample(t *testing.T
 	})
 }
 
-func testAccCloudRunDomainMapping_cloudRunDomainMappingBasicExample(context map[string]interface{}) string {
+func testAccComputeRegionInstantSnapshot_regionInstantSnapshotBasicExample(context map[string]interface{}) string {
 	return acctest.Nprintf(`
-
-resource "google_cloud_run_service" "default" {
-  name     = "%{cloud_run_service_name}"
-  location = "us-central1"
-
-  metadata {
-    namespace = "%{namespace}"
-  }
-
-  template {
-    spec {
-      containers {
-        image = "us-docker.pkg.dev/cloudrun/container/hello"
-      }
-    }
-  }
+resource "google_compute_region_disk" "foo" {
+  name                      = "%{disk_name}"
+  type                      = "pd-ssd"
+  region                    = "us-central1"
+  size                      = 10
+  replica_zones             = ["us-central1-a", "us-central1-f"]
 }
 
-resource "google_cloud_run_domain_mapping" "default" {
-  location = "us-central1"
-  name     = "tf-test-domain%{random_suffix}.gcp.tfacc.hashicorptest.com"
-
-  metadata {
-    namespace = "%{namespace}"
-  }
-
-  spec {
-    route_name = google_cloud_run_service.default.name
-  }
+resource "google_compute_region_instant_snapshot" "default" {
+  name         = "%{instance_name}"
+  region       = "us-central1"
+  source_disk  = google_compute_region_disk.foo.self_link
 }
 `, context)
 }
 
-func testAccCheckCloudRunDomainMappingDestroyProducer(t *testing.T) func(s *terraform.State) error {
+func testAccCheckComputeRegionInstantSnapshotDestroyProducer(t *testing.T) func(s *terraform.State) error {
 	return func(s *terraform.State) error {
 		for name, rs := range s.RootModule().Resources {
-			if rs.Type != "google_cloud_run_domain_mapping" {
+			if rs.Type != "google_compute_region_instant_snapshot" {
 				continue
 			}
 			if strings.HasPrefix(name, "data.") {
 				continue
 			}
 
-			// Delete is eventually-consistent; wait for a moment.
-			time.Sleep(10 * time.Second)
-
 			config := acctest.GoogleProviderConfig(t)
-			url, err := tpgresource.ReplaceVarsForTest(config, rs, fmt.Sprintf("%s%s", transport_tpg.BaseUrl(cloudrun.Product, config), "apis/domains.cloudrun.com/v1/namespaces/{{project}}/domainmappings/{{name}}"))
+			url, err := tpgresource.ReplaceVarsForTest(config, rs, fmt.Sprintf("%s%s", transport_tpg.BaseUrl(compute.Product, config), "projects/{{project}}/regions/{{region}}/instantSnapshots/{{name}}"))
 			if err != nil {
 				return err
 			}
@@ -148,15 +128,14 @@ func testAccCheckCloudRunDomainMappingDestroyProducer(t *testing.T) func(s *terr
 			}
 
 			_, err = transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
-				Config:               config,
-				Method:               "GET",
-				Project:              billingProject,
-				RawURL:               url,
-				UserAgent:            config.UserAgent,
-				ErrorRetryPredicates: []transport_tpg.RetryErrorPredicateFunc{transport_tpg.IsCloudRunCreationConflict},
+				Config:    config,
+				Method:    "GET",
+				Project:   billingProject,
+				RawURL:    url,
+				UserAgent: config.UserAgent,
 			})
 			if err == nil {
-				return fmt.Errorf("CloudRunDomainMapping still exists at %s", url)
+				return fmt.Errorf("ComputeRegionInstantSnapshot still exists at %s", url)
 			}
 		}
 

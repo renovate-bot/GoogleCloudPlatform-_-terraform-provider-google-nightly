@@ -59,7 +59,7 @@ func TestAccAgentRegistryService_agentRegistryServiceBasicExample(t *testing.T) 
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"service":       "service" + randomSuffix,
+		"service":       "tf-test-service" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 
@@ -112,7 +112,7 @@ func TestAccAgentRegistryService_agentRegistryServiceMcpServerExample(t *testing
 	randomSuffix := acctest.RandString(t, 10)
 
 	context := map[string]interface{}{
-		"service":       "service" + randomSuffix,
+		"service":       "tf-test-service" + randomSuffix,
 		"random_suffix": randomSuffix,
 	}
 
