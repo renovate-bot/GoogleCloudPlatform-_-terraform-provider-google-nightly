@@ -31,6 +31,9 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/redis"
+
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager"
+
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
@@ -768,7 +771,7 @@ resource "google_compute_network" "consumer_net" {
 
 func TestAccRedisCluster_redisClusterCmekExample(t *testing.T) {
 	t.Parallel()
-	acctest.BootstrapIamMembers(t, []acctest.IamMember{
+	resourcemanager.BootstrapIamMembers(t, []resourcemanager.IamMember{
 		{
 			Member: "serviceAccount:service-{project_number}@cloud-redis.iam.gserviceaccount.com",
 			Role:   "roles/cloudkms.cryptoKeyEncrypterDecrypter",
@@ -859,7 +862,7 @@ resource "google_compute_network" "consumer_net" {
 
 func TestAccRedisCluster_redisClusterFlexibleCaExample(t *testing.T) {
 	t.Parallel()
-	acctest.BootstrapIamMembers(t, []acctest.IamMember{
+	resourcemanager.BootstrapIamMembers(t, []resourcemanager.IamMember{
 		{
 			Member: "serviceAccount:service-{project_number}@cloud-redis.iam.gserviceaccount.com",
 			Role:   "roles/privateca.certificateRequester",

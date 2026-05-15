@@ -1,4 +1,5 @@
 // Copyright IBM Corp. 2014, 2026
+// Copyright 2026 Google LLC
 // SPDX-License-Identifier: MPL-2.0
 
 // ----------------------------------------------------------------------------
@@ -301,6 +302,16 @@ func resourceGeminiLoggingSettingCreate(d *schema.ResourceData, meta interface{}
 	}
 	d.SetId(id)
 
+	err = GeminiOperationWaitTime(
+		config, res, project, "Creating LoggingSetting", userAgent,
+		d.Timeout(schema.TimeoutCreate))
+
+	if err != nil {
+		// The resource didn't actually create
+		d.SetId("")
+		return fmt.Errorf("Error waiting to create LoggingSetting: %s", err)
+	}
+
 	log.Printf("[DEBUG] Finished creating LoggingSetting %q: %#v", d.Id(), res)
 
 	identity, err := d.Identity()
@@ -542,6 +553,13 @@ func resourceGeminiLoggingSettingUpdate(d *schema.ResourceData, meta interface{}
 			log.Printf("[DEBUG] Finished updating LoggingSetting %q: %#v", d.Id(), res)
 		}
 
+		err = GeminiOperationWaitTime(
+			config, res, project, "Updating LoggingSetting", userAgent,
+			d.Timeout(schema.TimeoutUpdate))
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return resourceGeminiLoggingSettingRead(d, meta)
@@ -602,6 +620,14 @@ func resourceGeminiLoggingSettingDelete(d *schema.ResourceData, meta interface{}
 	})
 	if err != nil {
 		return transport_tpg.HandleNotFoundError(err, d, "LoggingSetting")
+	}
+
+	err = GeminiOperationWaitTime(
+		config, res, project, "Deleting LoggingSetting", userAgent,
+		d.Timeout(schema.TimeoutDelete))
+
+	if err != nil {
+		return err
 	}
 
 	log.Printf("[DEBUG] Finished deleting LoggingSetting %q: %#v", d.Id(), res)

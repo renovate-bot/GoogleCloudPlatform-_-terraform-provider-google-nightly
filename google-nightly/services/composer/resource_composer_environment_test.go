@@ -29,6 +29,7 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/composer"
 	tpgcompute "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/compute"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -40,7 +41,7 @@ const testComposerBucketPrefix = "tf-test-composer-bucket"
 const testComposerNetworkAttachmentPrefix = "tf-test-composer-nta"
 
 func bootstrapComposerServiceAgents(t *testing.T) {
-	acctest.BootstrapIamMembers(t, []acctest.IamMember{
+	resourcemanager.BootstrapIamMembers(t, []resourcemanager.IamMember{
 		{
 			Member: "serviceAccount:service-{project_number}@cloudcomposer-accounts.iam.gserviceaccount.com",
 			Role:   "roles/cloudkms.cryptoKeyEncrypterDecrypter",

@@ -27,6 +27,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/servicenetworking"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
@@ -92,7 +93,7 @@ resource "google_vmwareengine_datastore" "example_thirdparty" {
 
 func TestAccVmwareengineDatastore_vmwareEngineDatastoreFilestore_update(t *testing.T) {
 	t.Parallel()
-	acctest.BootstrapIamMembers(t, []acctest.IamMember{
+	resourcemanager.BootstrapIamMembers(t, []resourcemanager.IamMember{
 		{
 			Member: "serviceAccount:service-{project_number}@gcp-sa-vmwareengine.iam.gserviceaccount.com",
 			Role:   "roles/file.viewer",
@@ -180,7 +181,7 @@ resource "google_vmwareengine_datastore" "example_filestore" {
 
 func TestAccVmwareengineDatastore_vmwareEngineDatastoreNetapp_update(t *testing.T) {
 	t.Parallel()
-	acctest.BootstrapIamMembers(t, []acctest.IamMember{
+	resourcemanager.BootstrapIamMembers(t, []resourcemanager.IamMember{
 		{
 			Member: "serviceAccount:service-{project_number}@gcp-sa-vmwareengine.iam.gserviceaccount.com",
 			Role:   "roles/netapp.viewer",

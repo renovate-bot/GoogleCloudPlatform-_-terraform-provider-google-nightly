@@ -1,4 +1,5 @@
 // Copyright IBM Corp. 2014, 2026
+// Copyright 2026 Google LLC
 // SPDX-License-Identifier: MPL-2.0
 
 // ----------------------------------------------------------------------------
@@ -301,6 +302,16 @@ func resourceGeminiDataSharingWithGoogleSettingCreate(d *schema.ResourceData, me
 	}
 	d.SetId(id)
 
+	err = GeminiOperationWaitTime(
+		config, res, project, "Creating DataSharingWithGoogleSetting", userAgent,
+		d.Timeout(schema.TimeoutCreate))
+
+	if err != nil {
+		// The resource didn't actually create
+		d.SetId("")
+		return fmt.Errorf("Error waiting to create DataSharingWithGoogleSetting: %s", err)
+	}
+
 	log.Printf("[DEBUG] Finished creating DataSharingWithGoogleSetting %q: %#v", d.Id(), res)
 
 	identity, err := d.Identity()
@@ -542,6 +553,13 @@ func resourceGeminiDataSharingWithGoogleSettingUpdate(d *schema.ResourceData, me
 			log.Printf("[DEBUG] Finished updating DataSharingWithGoogleSetting %q: %#v", d.Id(), res)
 		}
 
+		err = GeminiOperationWaitTime(
+			config, res, project, "Updating DataSharingWithGoogleSetting", userAgent,
+			d.Timeout(schema.TimeoutUpdate))
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return resourceGeminiDataSharingWithGoogleSettingRead(d, meta)
@@ -602,6 +620,14 @@ func resourceGeminiDataSharingWithGoogleSettingDelete(d *schema.ResourceData, me
 	})
 	if err != nil {
 		return transport_tpg.HandleNotFoundError(err, d, "DataSharingWithGoogleSetting")
+	}
+
+	err = GeminiOperationWaitTime(
+		config, res, project, "Deleting DataSharingWithGoogleSetting", userAgent,
+		d.Timeout(schema.TimeoutDelete))
+
+	if err != nil {
+		return err
 	}
 
 	log.Printf("[DEBUG] Finished deleting DataSharingWithGoogleSetting %q: %#v", d.Id(), res)

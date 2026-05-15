@@ -1,4 +1,5 @@
 // Copyright IBM Corp. 2014, 2026
+// Copyright 2026 Google LLC
 // SPDX-License-Identifier: MPL-2.0
 
 // ----------------------------------------------------------------------------
@@ -293,6 +294,16 @@ func resourceGeminiReleaseChannelSettingCreate(d *schema.ResourceData, meta inte
 	}
 	d.SetId(id)
 
+	err = GeminiOperationWaitTime(
+		config, res, project, "Creating ReleaseChannelSetting", userAgent,
+		d.Timeout(schema.TimeoutCreate))
+
+	if err != nil {
+		// The resource didn't actually create
+		d.SetId("")
+		return fmt.Errorf("Error waiting to create ReleaseChannelSetting: %s", err)
+	}
+
 	log.Printf("[DEBUG] Finished creating ReleaseChannelSetting %q: %#v", d.Id(), res)
 
 	identity, err := d.Identity()
@@ -524,6 +535,13 @@ func resourceGeminiReleaseChannelSettingUpdate(d *schema.ResourceData, meta inte
 			log.Printf("[DEBUG] Finished updating ReleaseChannelSetting %q: %#v", d.Id(), res)
 		}
 
+		err = GeminiOperationWaitTime(
+			config, res, project, "Updating ReleaseChannelSetting", userAgent,
+			d.Timeout(schema.TimeoutUpdate))
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return resourceGeminiReleaseChannelSettingRead(d, meta)
@@ -584,6 +602,14 @@ func resourceGeminiReleaseChannelSettingDelete(d *schema.ResourceData, meta inte
 	})
 	if err != nil {
 		return transport_tpg.HandleNotFoundError(err, d, "ReleaseChannelSetting")
+	}
+
+	err = GeminiOperationWaitTime(
+		config, res, project, "Deleting ReleaseChannelSetting", userAgent,
+		d.Timeout(schema.TimeoutDelete))
+
+	if err != nil {
+		return err
 	}
 
 	log.Printf("[DEBUG] Finished deleting ReleaseChannelSetting %q: %#v", d.Id(), res)

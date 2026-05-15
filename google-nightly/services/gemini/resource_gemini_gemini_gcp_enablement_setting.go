@@ -1,4 +1,5 @@
 // Copyright IBM Corp. 2014, 2026
+// Copyright 2026 Google LLC
 // SPDX-License-Identifier: MPL-2.0
 
 // ----------------------------------------------------------------------------
@@ -316,6 +317,16 @@ func resourceGeminiGeminiGcpEnablementSettingCreate(d *schema.ResourceData, meta
 	}
 	d.SetId(id)
 
+	err = GeminiOperationWaitTime(
+		config, res, project, "Creating GeminiGcpEnablementSetting", userAgent,
+		d.Timeout(schema.TimeoutCreate))
+
+	if err != nil {
+		// The resource didn't actually create
+		d.SetId("")
+		return fmt.Errorf("Error waiting to create GeminiGcpEnablementSetting: %s", err)
+	}
+
 	log.Printf("[DEBUG] Finished creating GeminiGcpEnablementSetting %q: %#v", d.Id(), res)
 
 	identity, err := d.Identity()
@@ -567,6 +578,13 @@ func resourceGeminiGeminiGcpEnablementSettingUpdate(d *schema.ResourceData, meta
 			log.Printf("[DEBUG] Finished updating GeminiGcpEnablementSetting %q: %#v", d.Id(), res)
 		}
 
+		err = GeminiOperationWaitTime(
+			config, res, project, "Updating GeminiGcpEnablementSetting", userAgent,
+			d.Timeout(schema.TimeoutUpdate))
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return resourceGeminiGeminiGcpEnablementSettingRead(d, meta)
@@ -627,6 +645,14 @@ func resourceGeminiGeminiGcpEnablementSettingDelete(d *schema.ResourceData, meta
 	})
 	if err != nil {
 		return transport_tpg.HandleNotFoundError(err, d, "GeminiGcpEnablementSetting")
+	}
+
+	err = GeminiOperationWaitTime(
+		config, res, project, "Deleting GeminiGcpEnablementSetting", userAgent,
+		d.Timeout(schema.TimeoutDelete))
+
+	if err != nil {
+		return err
 	}
 
 	log.Printf("[DEBUG] Finished deleting GeminiGcpEnablementSetting %q: %#v", d.Id(), res)

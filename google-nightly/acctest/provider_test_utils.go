@@ -38,6 +38,7 @@ import (
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/provider"
 	tpgcloudbilling "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/cloudbilling"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iambeta"
 	tpgiamcredentials "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/iamcredentials"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager"
 	rmClient "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/resourcemanager/client"
@@ -266,8 +267,8 @@ func SetupProjectsAndGetAccessToken(org, billing, pid, service string, config *t
 	}
 
 	// Create a service account for project-1
-	serviceAccountEmail := serviceAccountPrefix + service
-	sa1, err := getOrCreateServiceAccount(config, pid, serviceAccountEmail)
+	serviceAccountEmail := iambeta.ServiceAccountPrefix + service
+	sa1, err := iambeta.GetOrCreateServiceAccount(config, pid, serviceAccountEmail)
 	if err != nil {
 		return "", fmt.Errorf("error creating service account %s in 'project-1' with project id %s: %w", serviceAccountEmail, pid, err)
 	}

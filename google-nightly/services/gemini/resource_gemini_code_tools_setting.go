@@ -1,4 +1,5 @@
 // Copyright IBM Corp. 2014, 2026
+// Copyright 2026 Google LLC
 // SPDX-License-Identifier: MPL-2.0
 
 // ----------------------------------------------------------------------------
@@ -334,6 +335,16 @@ func resourceGeminiCodeToolsSettingCreate(d *schema.ResourceData, meta interface
 	}
 	d.SetId(id)
 
+	err = GeminiOperationWaitTime(
+		config, res, project, "Creating CodeToolsSetting", userAgent,
+		d.Timeout(schema.TimeoutCreate))
+
+	if err != nil {
+		// The resource didn't actually create
+		d.SetId("")
+		return fmt.Errorf("Error waiting to create CodeToolsSetting: %s", err)
+	}
+
 	log.Printf("[DEBUG] Finished creating CodeToolsSetting %q: %#v", d.Id(), res)
 
 	identity, err := d.Identity()
@@ -565,6 +576,13 @@ func resourceGeminiCodeToolsSettingUpdate(d *schema.ResourceData, meta interface
 			log.Printf("[DEBUG] Finished updating CodeToolsSetting %q: %#v", d.Id(), res)
 		}
 
+		err = GeminiOperationWaitTime(
+			config, res, project, "Updating CodeToolsSetting", userAgent,
+			d.Timeout(schema.TimeoutUpdate))
+
+		if err != nil {
+			return err
+		}
 	}
 
 	return resourceGeminiCodeToolsSettingRead(d, meta)
@@ -625,6 +643,14 @@ func resourceGeminiCodeToolsSettingDelete(d *schema.ResourceData, meta interface
 	})
 	if err != nil {
 		return transport_tpg.HandleNotFoundError(err, d, "CodeToolsSetting")
+	}
+
+	err = GeminiOperationWaitTime(
+		config, res, project, "Deleting CodeToolsSetting", userAgent,
+		d.Timeout(schema.TimeoutDelete))
+
+	if err != nil {
+		return err
 	}
 
 	log.Printf("[DEBUG] Finished deleting CodeToolsSetting %q: %#v", d.Id(), res)
