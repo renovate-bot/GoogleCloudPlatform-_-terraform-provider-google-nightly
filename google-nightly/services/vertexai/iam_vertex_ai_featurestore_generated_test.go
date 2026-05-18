@@ -30,14 +30,9 @@ import (
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 )
-
-import (
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
-)
-
-var _ = kms.Product
 
 var (
 	_ = fmt.Sprintf

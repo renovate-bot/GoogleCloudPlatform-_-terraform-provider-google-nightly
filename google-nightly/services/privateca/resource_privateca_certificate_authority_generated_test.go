@@ -38,12 +38,6 @@ import (
 	"google.golang.org/api/googleapi"
 )
 
-import (
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
-)
-
-var _ = kms.Product
-
 var (
 	_ = fmt.Sprintf
 	_ = log.Print

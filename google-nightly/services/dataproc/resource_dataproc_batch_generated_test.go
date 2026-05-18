@@ -32,17 +32,12 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/dataproc"
 
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
 	"google.golang.org/api/googleapi"
 )
-
-import (
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/kms"
-)
-
-var _ = kms.Product
 
 var (
 	_ = fmt.Sprintf

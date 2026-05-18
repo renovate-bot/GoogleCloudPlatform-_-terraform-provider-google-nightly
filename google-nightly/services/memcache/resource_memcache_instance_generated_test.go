@@ -32,14 +32,11 @@ import (
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/memcache"
 
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/servicenetworking"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
 	"google.golang.org/api/googleapi"
-)
-
-import (
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/servicenetworking"
 )
 
 var (
