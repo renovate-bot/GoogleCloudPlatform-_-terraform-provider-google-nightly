@@ -482,6 +482,11 @@ func Provider() *schema.Provider {
 				Optional:     true,
 				ValidateFunc: ValidateCustomEndpoint,
 			},
+			"config_custom_endpoint": {
+				Type:         schema.TypeString,
+				Optional:     true,
+				ValidateFunc: ValidateCustomEndpoint,
+			},
 			"contact_center_insights_custom_endpoint": {
 				Type:         schema.TypeString,
 				Optional:     true,

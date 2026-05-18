@@ -68,6 +68,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/colab"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/composer"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/compute"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/config"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/contactcenterinsights"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/container"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/containeranalysis"
