@@ -30,9 +30,8 @@ import (
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
-	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/vpcaccess"
-
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/servicenetworking"
+	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/vpcaccess"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/tpgresource"
 	transport_tpg "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/transport"
 
