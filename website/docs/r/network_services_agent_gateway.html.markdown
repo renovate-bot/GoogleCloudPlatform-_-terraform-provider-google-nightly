@@ -23,12 +23,10 @@ description: |-
 
 AgentGateway represents the agent gateway resource.
 
-~> **Warning:** This resource is in beta, and should be used with the terraform-provider-google-beta provider.
-See [Provider Versions](../guides/provider_versions.html.markdown) for more details on beta resources.
 
 To get more information about AgentGateway, see:
 
-* [API documentation](https://cloud.google.com/network-services/docs/reference/network-services/rest/v1beta1/projects.locations.agentGateways)
+* [API documentation](https://cloud.google.com/network-services/docs/reference/network-services/rest/v1/projects.locations.agentGateways)
 
 ## Example Usage - Network Services Agent Gateway Full
 
@@ -54,9 +52,35 @@ resource "google_network_services_agent_gateway" "default" {
 
   network_config {
     egress {
-      network_attachment = "projects/my-project-name/regions/us-central1/networkAttachments/my-network-attachment"
+      network_attachment = google_compute_network_attachment.default.id
     }
   }
+
+  depends_on = [google_project_service.agent_registry]
+}
+
+resource "google_project_service" "agent_registry" {
+  service            = "agentregistry.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_compute_network" "default" {
+  name                    = "net-my-full-agent-gateway"
+  auto_create_subnetworks = false
+}
+
+resource "google_compute_subnetwork" "default" {
+  name          = "subnet-my-full-agent-gateway"
+  region        = "us-central1"
+  network       = google_compute_network.default.id
+  ip_cidr_range = "10.0.0.0/16"
+}
+
+resource "google_compute_network_attachment" "default" {
+  name                  = "na-my-full-agent-gateway"
+  region                = "us-central1"
+  connection_preference = "ACCEPT_AUTOMATIC"
+  subnetworks           = [google_compute_subnetwork.default.self_link]
 }
 ```
 ## Example Usage - Network Services Agent Gateway Client To Agent
@@ -67,8 +91,6 @@ resource "google_network_services_agent_gateway" "default" {
   name     = "my-client-to-agent-gateway"
   location = "us-central1"
 
-  protocols = ["MCP"]
-
   google_managed {
     governed_access_path = "CLIENT_TO_AGENT"
   }
@@ -76,6 +98,13 @@ resource "google_network_services_agent_gateway" "default" {
   registries = [
     "//agentregistry.googleapis.com/projects/my-project-name/locations/us-central1"
   ]
+
+  depends_on = [google_project_service.agent_registry]
+}
+
+resource "google_project_service" "agent_registry" {
+  service            = "agentregistry.googleapis.com"
+  disable_on_destroy = false
 }
 ```
 ## Example Usage - Network Services Agent Gateway Self Managed
@@ -85,8 +114,6 @@ resource "google_network_services_agent_gateway" "default" {
 resource "google_network_services_agent_gateway" "default" {
   name = "my-self-managed-agent-gateway"
   location = "us-central1"
-
-  protocols = ["MCP"]
 
   self_managed {
     resource_uri = "projects/my-project-name/locations/us-central1/gateways/my-gateway"
@@ -102,11 +129,6 @@ resource "google_network_services_agent_gateway" "default" {
 
 The following arguments are supported:
 
-
-* `protocols` -
-  (Required)
-  List of protocols supported by an Agent Gateway.
-  Each value may be one of: `MCP`.
 
 * `name` -
   (Required)
@@ -127,6 +149,13 @@ The following arguments are supported:
 * `description` -
   (Optional)
   A free-text description of the resource. Max length 1024 characters.
+
+* `protocols` -
+  (Optional, Deprecated)
+  List of protocols supported by an Agent Gateway.
+  Each value may be one of: `MCP`.
+
+  ~> **Warning:** `protocols` is deprecated and will be removed in a future major release.
 
 * `google_managed` -
   (Optional)
