@@ -223,7 +223,7 @@ func resourceKMSProjectAutokeyConfigCreate(d *schema.ResourceData, meta interfac
 	}
 	d.SetId(id)
 
-	// custom code to sleep for 10 seconds to allow the KMS key to be fully available before proceeding with any operations that depend on it
+	//custom code to sleep for 10 seconds to allow the KMS key to be fully available before proceeding with any operations that depend on it
 	time.Sleep(10 * time.Second)
 
 	log.Printf("[DEBUG] Finished creating ProjectAutokeyConfig %q: %#v", d.Id(), res)
@@ -395,7 +395,7 @@ func resourceKMSProjectAutokeyConfigUpdate(d *schema.ResourceData, meta interfac
 		log.Printf("[DEBUG] Finished updating ProjectAutokeyConfig %q: %#v", d.Id(), res)
 	}
 
-	// custom code to sleep for 10 seconds to allow the KMS key to be fully available before proceeding with any operations that depend on it
+	//custom code to sleep for 10 seconds to allow the KMS key to be fully available before proceeding with any operations that depend on it
 	time.Sleep(10 * time.Second)
 	return resourceKMSProjectAutokeyConfigRead(d, meta)
 }

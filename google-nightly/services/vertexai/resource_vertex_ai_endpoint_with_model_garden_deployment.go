@@ -1634,7 +1634,7 @@ func resourceVertexAIEndpointWithModelGardenDeploymentCreate(d *schema.ResourceD
 		return transport_tpg.HandleNotFoundError(err, d, fmt.Sprintf("VertexAIEndpointWithModelGardenDeployment %q", d.Id()))
 	}
 
-	// Access the 'deployedModels' attribute from the response.
+	//  Access the 'deployedModels' attribute from the response.
 	deployedModelsRaw, ok := readRes["deployedModels"]
 	if !ok || deployedModelsRaw == nil {
 		log.Printf("[ERROR] No deployed models found in the endpoint response")

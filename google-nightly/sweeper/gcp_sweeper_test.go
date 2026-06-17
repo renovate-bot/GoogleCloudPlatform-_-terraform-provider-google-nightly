@@ -34,6 +34,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/backupdr"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/beyondcorp"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/biglake"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/biglakehive"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/biglakeiceberg"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/bigquery"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/bigqueryanalyticshub"
