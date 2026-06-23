@@ -1344,7 +1344,7 @@ func resourceComputeRegionInstanceTemplateCreate(d *schema.ResourceData, meta in
 	if err != nil {
 		return err
 	}
-	PartnerMetadata, err := convertPartnerMetadataToCompute(partnerMetadataMap)
+	PartnerMetadata, err := convertPartnerMetadataToComputeTyped(partnerMetadataMap)
 	if err != nil {
 		return err
 	}
@@ -1400,11 +1400,7 @@ func resourceComputeRegionInstanceTemplateCreate(d *schema.ResourceData, meta in
 		instanceProperties["keyRevocationActionType"] = v
 	}
 	if metadata != nil {
-		metadataMap, err := tpgresource.ConvertToMap(metadata)
-		if err != nil {
-			return fmt.Errorf("Error converting metadata: %s", err)
-		}
-		instanceProperties["metadata"] = metadataMap
+		instanceProperties["metadata"] = metadata
 	}
 	if networkPerformanceConfig != nil {
 		instanceProperties["networkPerformanceConfig"] = networkPerformanceConfig

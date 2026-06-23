@@ -1669,7 +1669,7 @@ func resourceComputeInstanceTemplateCreate(d *schema.ResourceData, meta interfac
 		return err
 	}
 
-	metadata, err := resourceInstanceMetadata(d)
+	metadata, err := resourceInstanceMetadataTyped(d)
 	if err != nil {
 		return err
 	}
@@ -1677,7 +1677,7 @@ func resourceComputeInstanceTemplateCreate(d *schema.ResourceData, meta interfac
 	if err != nil {
 		return err
 	}
-	PartnerMetadata, err := convertPartnerMetadataToCompute(partnerMetadataMap)
+	PartnerMetadata, err := convertPartnerMetadataToComputeTyped(partnerMetadataMap)
 	if err != nil {
 		return err
 	}

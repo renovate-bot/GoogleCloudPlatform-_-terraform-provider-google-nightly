@@ -1860,7 +1860,7 @@ func expandComputeInstance(project string, d *schema.ResourceData, config *trans
 		return nil, fmt.Errorf("Error creating params: %s", err)
 	}
 
-	metadata, err := resourceInstanceMetadata(d)
+	metadata, err := resourceInstanceMetadataTyped(d)
 	if err != nil {
 		return nil, fmt.Errorf("Error creating metadata: %s", err)
 	}
@@ -1869,7 +1869,7 @@ func expandComputeInstance(project string, d *schema.ResourceData, config *trans
 	if err != nil {
 		return nil, fmt.Errorf("Error creating partner metadata: %s", err)
 	}
-	PartnerMetadata, err := convertPartnerMetadataToCompute(partnerMetadataMap)
+	PartnerMetadata, err := convertPartnerMetadataToComputeTyped(partnerMetadataMap)
 	if err != nil {
 		return nil, fmt.Errorf("Error converting partner metadata: %s", err)
 	}
@@ -2589,6 +2589,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 
 				instMap["description"] = d.Get("description").(string)
 
+				stripInitializeParams(instMap)
+
 				res, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
 					Config:    config,
 					Method:    "PUT",
@@ -2611,14 +2613,9 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 	}
 
 	if d.HasChange("metadata") {
-		metadata, err := resourceInstanceMetadata(d)
+		metadataBody, err := resourceInstanceMetadata(d)
 		if err != nil {
 			return fmt.Errorf("Error parsing metadata: %s", err)
-		}
-
-		metadataBody, err := tpgresource.ConvertToMap(metadata)
-		if err != nil {
-			return fmt.Errorf("Error converting metadata: %s", err)
 		}
 
 		metadataInstanceUrl, err := tpgresource.ReplaceVars(d, config, "{{ComputeBasePath}}projects/{{project}}/zones/{{zone}}/instances/{{name}}")
@@ -2691,6 +2688,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 				}
 				patchedPM := resourceInstancePatchPartnerMetadata(d, currentPM)
 				instMap["partnerMetadata"] = patchedPM
+
+				stripInitializeParams(instMap)
 
 				res, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
 					Config:    config,
@@ -2787,6 +2786,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 					return fmt.Errorf("Error updating params: %s", err)
 				}
 				instMap["params"] = paramsMap
+
+				stripInitializeParams(instMap)
 
 				res, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
 					Config:    config,
@@ -3624,6 +3625,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 
 				instMap["canIpForward"] = d.Get("can_ip_forward").(bool)
 
+				stripInitializeParams(instMap)
+
 				res, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
 					Config:    config,
 					Method:    "PUT",
@@ -3954,6 +3957,8 @@ func resourceComputeInstanceUpdate(d *schema.ResourceData, meta interface{}) err
 						return fmt.Errorf("Error converting advanced_machine_features: %s", err)
 					}
 					instMap["advancedMachineFeatures"] = featuresMap
+
+					stripInitializeParams(instMap)
 
 					res, err := transport_tpg.SendRequest(transport_tpg.SendRequestOptions{
 						Config:    config,
