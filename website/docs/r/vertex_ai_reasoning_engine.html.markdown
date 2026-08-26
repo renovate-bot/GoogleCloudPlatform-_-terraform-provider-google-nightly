@@ -1207,7 +1207,7 @@ When set to "DELETE", deleting the resource is permitted.
   Possible values are: `STABLE`, `EXPERIMENTAL`.
 
 * `agent_gateway_config` -
-  (Optional, [Beta](../guides/provider_versions.html.markdown))
+  (Optional)
   Agent Gateway configuration for the Reasoning Engine deployment.
   Structure is [documented below](#nested_spec_deployment_spec_agent_gateway_config).
 
@@ -1414,7 +1414,7 @@ When set to "DELETE", deleting the resource is permitted.
   Structure is [documented below](#nested_spec_source_code_spec_developer_connect_source).
 
 * `agent_config_source` -
-  (Optional, [Beta](../guides/provider_versions.html.markdown))
+  (Optional)
   Optional. Specification for the deploying from agent config.
   Structure is [documented below](#nested_spec_source_code_spec_agent_config_source).
 
@@ -1512,6 +1512,10 @@ When set to "DELETE", deleting the resource is permitted.
 * `worker_pool` -
   (Optional)
   Optional. The resource name of the Cloud Build WorkerPool to use for the build.
+
+* `service_account` -
+  (Optional)
+  Optional. The service account that the Cloud Build builder runs as.
 
 <a name="nested_context_spec"></a>The `context_spec` block supports:
 

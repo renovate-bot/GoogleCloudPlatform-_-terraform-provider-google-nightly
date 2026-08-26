@@ -218,6 +218,23 @@ variable_declarations {
     private_key = google_secret_manager_secret_version.fake_secret_version.name
   }
 
+  vpc_sc_settings {
+    allowed_origins = ["https://example.com"]
+  }
+
+  error_handling_settings {
+    error_handling_strategy = "FALLBACK_RESPONSE"
+    fallback_response_config {
+      custom_fallback_messages = {
+        "en-US" = "An error occurred, please try again."
+      }
+      max_fallback_attempts = 3
+    }
+    end_session_config {
+      escalate_session = true
+    }
+  }
+
   # Root agent should not be specified when creating an app
 }
 ```
@@ -494,6 +511,16 @@ The following arguments are supported:
   The default client certificate settings for the app.
   Structure is [documented below](#nested_client_certificate_settings).
 
+* `vpc_sc_settings` -
+  (Optional)
+  VPC-SC settings for the app.
+  Structure is [documented below](#nested_vpc_sc_settings).
+
+* `error_handling_settings` -
+  (Optional)
+  Settings to describe how errors should be handled in the app.
+  Structure is [documented below](#nested_error_handling_settings).
+
 * `project` - (Optional) The ID of the project in which the resource belongs.
     If it is not provided, the provider project is used.
 
@@ -651,6 +678,11 @@ The following arguments are supported:
   Message for configuration for the web widget.
   Structure is [documented below](#nested_default_channel_profile_web_widget_config).
 
+* `whatsapp_config` -
+  (Optional)
+  Configuration specific to WhatsApp deployments.
+  Structure is [documented below](#nested_default_channel_profile_whatsapp_config).
+
 
 <a name="nested_default_channel_profile_persona_property"></a>The `persona_property` block supports:
 
@@ -684,6 +716,32 @@ The following arguments are supported:
 * `web_widget_title` -
   (Optional)
   The title of the web widget.
+
+<a name="nested_default_channel_profile_whatsapp_config"></a>The `whatsapp_config` block supports:
+
+* `waba_id` -
+  (Required)
+  The WhatsApp Business Account ID.
+
+* `phone_number_id` -
+  (Required)
+  The Meta phone number ID.
+
+* `phone_number` -
+  (Optional)
+  The phone number in E.164 format.
+
+* `display_name` -
+  (Output)
+  The fetched Meta business page name.
+
+* `thumbnail_url` -
+  (Output)
+  The fetched Meta business profile thumbnail URL.
+
+* `description` -
+  (Output)
+  The description of the Meta business page or profile.
 
 <a name="nested_evaluation_metrics_thresholds"></a>The `evaluation_metrics_thresholds` block supports:
 
@@ -831,6 +889,11 @@ The following arguments are supported:
 * `disable_conversation_logging` -
   (Optional)
   Whether to disable conversation logging for the sessions.
+
+* `retention_window` -
+  (Optional)
+  Controls the retention window for the conversation.
+  If not set, the conversation will be retained for 365 days.
 
 <a name="nested_logging_settings_redaction_config"></a>The `redaction_config` block supports:
 
@@ -1003,6 +1066,58 @@ The following arguments are supported:
   (Optional)
   The passphrase to decrypt the private key.
   Should be left unset if the private key is not encrypted.
+
+<a name="nested_vpc_sc_settings"></a>The `vpc_sc_settings` block supports:
+
+* `allowed_origins` -
+  (Optional)
+  The allowed HTTP(s) origins that OpenAPI tools in the App are
+  able to directly call when VPC Service Controls are enabled. These strings
+  must match the origin exactly, including the port if specified. For
+  example, "https://example.com" or "https://example.com:443". This list does
+  not yet apply to Python tools that may make direct HTTP calls.
+
+<a name="nested_error_handling_settings"></a>The `error_handling_settings` block supports:
+
+* `error_handling_strategy` -
+  (Optional)
+  The strategy to use for error handling.
+  Possible values:
+  NONE
+  FALLBACK_RESPONSE
+  END_SESSION
+
+* `fallback_response_config` -
+  (Optional)
+  Configuration for handling fallback responses.
+  Structure is [documented below](#nested_error_handling_settings_fallback_response_config).
+
+* `end_session_config` -
+  (Optional)
+  Configuration for ending the session in case of system errors (e.g. LLM
+  errors).
+  Structure is [documented below](#nested_error_handling_settings_end_session_config).
+
+
+<a name="nested_error_handling_settings_fallback_response_config"></a>The `fallback_response_config` block supports:
+
+* `custom_fallback_messages` -
+  (Optional)
+  The fallback messages in case of system errors (e.g. LLM errors),
+  mapped by supported language code
+  (https://docs.cloud.google.com/customer-engagement-ai/conversational-agents/ps/reference/language).
+
+* `max_fallback_attempts` -
+  (Optional)
+  The maximum number of fallback attempts to make before the agent
+  emitting EndSession Signal.
+
+<a name="nested_error_handling_settings_end_session_config"></a>The `end_session_config` block supports:
+
+* `escalate_session` -
+  (Optional)
+  Whether to escalate the session in EndSession. If session is escalated,
+  metadata in EndSession will contain session_escalated = true.
 
 ## Attributes Reference
 

@@ -153,6 +153,7 @@ import (
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networkconnectivity"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networkconnectivityv1"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networkmanagement"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networkmanagementv1"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networksecurity"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/networkservices"
 	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/observability"
