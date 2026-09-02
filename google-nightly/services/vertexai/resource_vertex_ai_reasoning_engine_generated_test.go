@@ -767,6 +767,17 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
                     output  = "pizza"
                   }
                 }
+                parts {
+                  audio_transcription {
+                    speaker_label = "spk_1"
+                    text          = "I like pepperoni pizza"
+                    words {
+                      start_offset = "0.5s"
+                      end_offset   = "1.5s"
+                      word         = "pepperoni"
+                    }
+                  }
+                }
               }
             }
           }
@@ -899,7 +910,6 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
   display_name = "%{name}"
   description  = "Reasoning engine with granular ttl"
   region       = "us-central1"
-  provider     = google-beta
 
   context_spec {
     memory_bank_config {
@@ -922,9 +932,7 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
   }
 }
 
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 `, context)
 }
 

@@ -20,7 +20,9 @@
 package colab_test
 
 import (
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/querycheck"
@@ -29,10 +31,14 @@ import (
 
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/acctest"
 	"github.com/hashicorp/terraform-provider-google-nightly/google-nightly/envvar"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/colab"
+	_ "github.com/hashicorp/terraform-provider-google-nightly/google-nightly/services/storage"
 )
 
 var (
+	_ = strings.Trim
 	_ = envvar.TestEnvVar
+	_ = time.Now
 )
 
 func TestAccColabNotebookExecutionListQuery_generated(t *testing.T) {

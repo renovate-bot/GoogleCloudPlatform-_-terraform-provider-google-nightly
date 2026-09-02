@@ -835,7 +835,7 @@ func TestAccVertexAIReasoningEngine_memoryGenerationTriggerUpdate(t *testing.T) 
 
 	acctest.VcrTest(t, resource.TestCase{
 		PreCheck:                 func() { acctest.AccTestPreCheck(t) },
-		ProtoV5ProviderFactories: acctest.ProtoV5ProviderBetaFactories(t),
+		ProtoV5ProviderFactories: acctest.ProtoV5ProviderFactories(t),
 		CheckDestroy:             testAccCheckVertexAIReasoningEngineDestroyProducer(t),
 		Steps: []resource.TestStep{
 			{
@@ -860,12 +860,9 @@ func TestAccVertexAIReasoningEngine_memoryGenerationTriggerUpdate(t *testing.T) 
 
 func testAccVertexAIReasoningEngine_memoryGenerationTriggerFixedInterval(context map[string]interface{}) string {
 	return acctest.Nprintf(`
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 
 resource "google_vertex_ai_reasoning_engine" "primary" {
-  provider     = google-beta
   display_name = "tf-test-reasoning-engine-%{random_suffix}"
   description  = "Reasoning engine testing memory generation triggers"
   region       = "us-central1"
@@ -891,12 +888,9 @@ resource "google_vertex_ai_reasoning_engine" "primary" {
 
 func testAccVertexAIReasoningEngine_memoryGenerationTriggerEventCount(context map[string]interface{}) string {
 	return acctest.Nprintf(`
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 
 resource "google_vertex_ai_reasoning_engine" "primary" {
-  provider     = google-beta
   display_name = "tf-test-reasoning-engine-%{random_suffix}"
   description  = "Reasoning engine testing memory generation triggers"
   region       = "us-central1"
@@ -930,7 +924,7 @@ func TestAccVertexAIReasoningEngine_customizationConfigsUpdate(t *testing.T) {
 
 	acctest.VcrTest(t, resource.TestCase{
 		PreCheck:                 func() { acctest.AccTestPreCheck(t) },
-		ProtoV5ProviderFactories: acctest.ProtoV5ProviderBetaFactories(t),
+		ProtoV5ProviderFactories: acctest.ProtoV5ProviderFactories(t),
 		CheckDestroy:             testAccCheckVertexAIReasoningEngineDestroyProducer(t),
 		Steps: []resource.TestStep{
 			{
@@ -955,12 +949,9 @@ func TestAccVertexAIReasoningEngine_customizationConfigsUpdate(t *testing.T) {
 
 func testAccVertexAIReasoningEngine_customizationConfigsBefore(context map[string]interface{}) string {
 	return acctest.Nprintf(`
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 
 resource "google_vertex_ai_reasoning_engine" "primary" {
-  provider     = google-beta
   display_name = "tf-test-reasoning-engine-%{random_suffix}"
   description  = "Reasoning engine testing customization configs update"
   region       = "us-central1"
@@ -1048,6 +1039,17 @@ resource "google_vertex_ai_reasoning_engine" "primary" {
                     data      = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
                   }
                 }
+                parts {
+                  audio_transcription {
+                    speaker_label = "spk_1"
+                    text          = "I like pepperoni pizza"
+                    words {
+                      start_offset = "0.5s"
+                      end_offset   = "1.5s"
+                      word         = "pepperoni"
+                    }
+                  }
+                }
               }
             }
           }
@@ -1073,12 +1075,9 @@ resource "google_vertex_ai_reasoning_engine" "primary" {
 
 func testAccVertexAIReasoningEngine_customizationConfigsAfter(context map[string]interface{}) string {
 	return acctest.Nprintf(`
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 
 resource "google_vertex_ai_reasoning_engine" "primary" {
-  provider     = google-beta
   display_name = "tf-test-reasoning-engine-%{random_suffix}"
   description  = "Reasoning engine testing customization configs update"
   region       = "us-central1"
@@ -1164,6 +1163,17 @@ resource "google_vertex_ai_reasoning_engine" "primary" {
                   inline_data {
                     mime_type = "image/png"
                     data      = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+                  }
+                }
+                parts {
+                  audio_transcription {
+                    speaker_label = "spk_2"
+                    text          = "Remember that I prefer dark mode"
+                    words {
+                      start_offset = "1s"
+                      end_offset   = "2.5s"
+                      word         = "dark"
+                    }
                   }
                 }
               }

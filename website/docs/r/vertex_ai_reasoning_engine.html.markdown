@@ -561,6 +561,17 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
                     output  = "pizza"
                   }
                 }
+                parts {
+                  audio_transcription {
+                    speaker_label = "spk_1"
+                    text          = "I like pepperoni pizza"
+                    words {
+                      start_offset = "0.5s"
+                      end_offset   = "1.5s"
+                      word         = "pepperoni"
+                    }
+                  }
+                }
               }
             }
           }
@@ -664,7 +675,6 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
   display_name = "re-gran-ttl"
   description  = "Reasoning engine with granular ttl"
   region       = "us-central1"
-  provider     = google-beta
 
   context_spec {
     memory_bank_config {
@@ -687,9 +697,7 @@ resource "google_vertex_ai_reasoning_engine" "reasoning_engine" {
   }
 }
 
-data "google_project" "project" {
-  provider = google-beta
-}
+data "google_project" "project" {}
 ```
 <div class = "oics-button" style="float: right; margin: 0 0 -15px">
   <a href="https://console.cloud.google.com/cloudshell/open?cloudshell_git_repo=https%3A%2F%2Fgithub.com%2Fterraform-google-modules%2Fdocs-examples.git&cloudshell_image=gcr.io%2Fcloudshell-images%2Fcloudshell%3Alatest&cloudshell_print=.%2Fmotd&cloudshell_tutorial=.%2Ftutorial.md&cloudshell_working_dir=vertex_ai_reasoning_engine_traffic_config&open_in_editor=main.tf" target="_blank">
@@ -809,7 +817,7 @@ The following arguments are supported:
   Structure is [documented below](#nested_spec).
 
 * `context_spec` -
-  (Optional, [Beta](../guides/provider_versions.html.markdown))
+  (Optional)
   Optional. Configuration for how Agent Engine sub-resources should manage context.
   Structure is [documented below](#nested_context_spec).
 
@@ -1795,6 +1803,11 @@ When set to "DELETE", deleting the resource is permitted.
   Video metadata.
   Structure is [documented below](#nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_video_metadata).
 
+* `audio_transcription` -
+  (Optional)
+  Audio (input or output) transcription. This is only set when this Part contains audio data.
+  Structure is [documented below](#nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_audio_transcription).
+
 
 <a name="nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_inline_data"></a>The `inline_data` block supports:
 
@@ -1881,6 +1894,36 @@ When set to "DELETE", deleting the resource is permitted.
 * `end_offset` -
   (Optional)
   The end offset of the video.
+
+<a name="nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_audio_transcription"></a>The `audio_transcription` block supports:
+
+* `speaker_label` -
+  (Optional)
+  A label identifying the speaker of this audio segment (e.g. spk_1, spk_2). Present when diarization is set.
+
+* `text` -
+  (Required)
+  The transcription text of this audio segment.
+
+* `words` -
+  (Optional)
+  Detailed word-level transcriptions and timing details. Present when word_timestamp is set.
+  Structure is [documented below](#nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_audio_transcription_words).
+
+
+<a name="nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_conversation_source_events_content_parts_audio_transcription_words"></a>The `words` block supports:
+
+* `end_offset` -
+  (Optional)
+  End offset in time of the word relative to the start of the audio.
+
+* `start_offset` -
+  (Optional)
+  Start offset in time of the word relative to the start of the audio.
+
+* `word` -
+  (Required)
+  Transcript of the word.
 
 <a name="nested_context_spec_memory_bank_config_customization_configs_generate_memories_examples_generated_memories"></a>The `generated_memories` block supports:
 
