@@ -770,6 +770,20 @@ In addition to the arguments listed above, the following computed attributes are
   Settings for golden evaluations.
   Structure is [documented below](#nested_snapshot_app_evaluation_metrics_thresholds_golden_evaluation_metrics_thresholds).
 
+* `golden_hallucination_metric_behavior` -
+  (Output)
+  The hallucination metric behavior for golden evaluations.
+  Possible values:
+  DISABLED
+  ENABLED
+
+* `scenario_hallucination_metric_behavior` -
+  (Output)
+  The hallucination metric behavior for scenario evaluations.
+  Possible values:
+  DISABLED
+  ENABLED
+
 
 <a name="nested_snapshot_app_evaluation_metrics_thresholds_golden_evaluation_metrics_thresholds"></a>The `golden_evaluation_metrics_thresholds` block contains:
 
@@ -852,6 +866,12 @@ In addition to the arguments listed above, the following computed attributes are
   Settings to describe the conversation logging behaviors for the app.
   Structure is [documented below](#nested_snapshot_app_logging_settings_conversation_logging_settings).
 
+* `metric_analysis_settings` -
+  (Output)
+  Settings to describe the conversation data collection behaviors for the LLM
+  analysis pipeline for the app.
+  Structure is [documented below](#nested_snapshot_app_logging_settings_metric_analysis_settings).
+
 * `redaction_config` -
   (Output)
   Configuration to instruct how sensitive data should be handled.
@@ -914,6 +934,14 @@ In addition to the arguments listed above, the following computed attributes are
   (Output)
   Controls the retention window for the conversation.
   If not set, the conversation will be retained for 365 days.
+
+<a name="nested_snapshot_app_logging_settings_metric_analysis_settings"></a>The `metric_analysis_settings` block contains:
+
+* `llm_metrics_opted_out` -
+  (Output)
+  Whether to collect conversation data for llm analysis metrics. If true,
+  conversation data will not be collected for llm analysis metrics;
+  otherwise, conversation data will be collected.
 
 <a name="nested_snapshot_app_logging_settings_redaction_config"></a>The `redaction_config` block contains:
 

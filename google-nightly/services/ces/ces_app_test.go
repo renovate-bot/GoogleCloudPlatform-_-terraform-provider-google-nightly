@@ -40,6 +40,11 @@ func TestAccCESApp_update(t *testing.T) {
 		Steps: []resource.TestStep{
 			{
 				Config: testAccCESApp_cesAppBasicExample_full(ctx),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "locked", "true"),
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "default_channel_profile.0.web_widget_config.0.security_settings.0.enable_public_access", "true"),
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "default_channel_profile.0.web_widget_config.0.security_settings.0.allowed_origins.0", "https://example.com"),
+				),
 			},
 			{
 				ResourceName:            "google_ces_app.ces_app_basic",
@@ -54,6 +59,12 @@ func TestAccCESApp_update(t *testing.T) {
 						plancheck.ExpectResourceAction("google_ces_app.ces_app_basic", plancheck.ResourceActionUpdate),
 					},
 				},
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "locked", "false"),
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "default_channel_profile.0.web_widget_config.0.security_settings.0.enable_public_access", "false"),
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "default_channel_profile.0.web_widget_config.0.security_settings.0.enable_origin_check", "true"),
+					resource.TestCheckResourceAttr("google_ces_app.ces_app_basic", "default_channel_profile.0.web_widget_config.0.security_settings.0.enable_recaptcha", "true"),
+				),
 			},
 			{
 				ResourceName:            "google_ces_app.ces_app_basic",
@@ -95,6 +106,7 @@ resource "google_ces_app" "ces_app_basic" {
   description = "Basic CES App example"
   display_name = "tf-test-my-app-%{random_suffix}"
   pinned = false
+  locked = true
   tool_execution_mode = "SEQUENTIAL"
 
   language_settings {
@@ -154,6 +166,10 @@ resource "google_ces_app" "ces_app_basic" {
       disable_conversation_logging = true
       retention_window = "86400s"
     }
+
+    metric_analysis_settings {
+      llm_metrics_opted_out = false
+    }
   }
 
   model_settings {
@@ -171,6 +187,8 @@ resource "google_ces_app" "ces_app_basic" {
         tool_invocation_parameter_correctness_threshold = 1.0
       }
     }
+    golden_hallucination_metric_behavior   = "ENABLED"
+    scenario_hallucination_metric_behavior = "ENABLED"
   }
 
   variable_declarations {
@@ -235,6 +253,12 @@ resource "google_ces_app" "ces_app_basic" {
       modality = "CHAT_ONLY"
       theme    = "LIGHT"
       web_widget_title = "Help Assistant"
+      security_settings {
+        enable_public_access = true
+        enable_origin_check  = false
+        enable_recaptcha     = false
+        allowed_origins      = ["https://example.com"]
+      }
     }
   }
 
@@ -304,6 +328,7 @@ resource "google_ces_app" "ces_app_basic" {
   description = "Updated CES App example"
   display_name = "tf-test-my-app%{random_suffix}"
   pinned = true
+  locked = false
   tool_execution_mode = "PARALLEL"
 
   language_settings {
@@ -363,6 +388,10 @@ resource "google_ces_app" "ces_app_basic" {
       disable_conversation_logging = true
       retention_window = "172800s"
     }
+
+    metric_analysis_settings {
+      llm_metrics_opted_out = true
+    }
   }
 
   model_settings {
@@ -380,6 +409,8 @@ resource "google_ces_app" "ces_app_basic" {
         tool_invocation_parameter_correctness_threshold = 0.1
       }
     }
+    golden_hallucination_metric_behavior   = "DISABLED"
+    scenario_hallucination_metric_behavior = "DISABLED"
   }
 
   variable_declarations {
@@ -444,6 +475,12 @@ resource "google_ces_app" "ces_app_basic" {
       modality = "CHAT_ONLY"
       theme    = "LIGHT"
       web_widget_title = "Help Assistant"
+      security_settings {
+        enable_public_access = false
+        enable_origin_check  = true
+        enable_recaptcha     = true
+        allowed_origins      = ["https://example.com", "https://example.org"]
+      }
     }
     whatsapp_config {
       waba_id = "123456789012345"

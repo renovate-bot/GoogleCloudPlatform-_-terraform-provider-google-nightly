@@ -121,6 +121,10 @@ resource "google_ces_app" "ces_app_basic" {
     conversation_logging_settings {
       disable_conversation_logging = true
     }
+
+    metric_analysis_settings {
+      llm_metrics_opted_out = false
+    }
   }
 
   model_settings {
@@ -138,6 +142,8 @@ resource "google_ces_app" "ces_app_basic" {
         tool_invocation_parameter_correctness_threshold = 1.0
       }
     }
+    golden_hallucination_metric_behavior   = "ENABLED"
+    scenario_hallucination_metric_behavior = "ENABLED"
   }
 
 variable_declarations {
@@ -202,6 +208,12 @@ variable_declarations {
       modality = "CHAT_ONLY"
       theme    = "LIGHT"
       web_widget_title = "Help Assistant"
+      security_settings {
+        enable_public_access = true
+        enable_origin_check  = false
+        enable_recaptcha     = false
+        allowed_origins      = ["https://example.com"]
+      }
     }
   }
 
@@ -476,6 +488,11 @@ The following arguments are supported:
   Settings to describe the logging behaviors for the app.
   Structure is [documented below](#nested_logging_settings).
 
+* `locked` -
+  (Optional)
+  Indicates whether the app is locked for changes. If the app is locked,
+  modifications to the app resources will be rejected.
+
 * `metadata` -
   (Optional)
   Metadata about the app. This field can be used to store additional
@@ -717,6 +734,40 @@ The following arguments are supported:
   (Optional)
   The title of the web widget.
 
+* `security_settings` -
+  (Optional)
+  The security settings of the web widget.
+  Structure is [documented below](#nested_default_channel_profile_web_widget_config_security_settings).
+
+
+<a name="nested_default_channel_profile_web_widget_config_security_settings"></a>The `security_settings` block supports:
+
+* `allowed_origins` -
+  (Optional)
+  The origins that are allowed to host the web widget. An origin is
+  defined by RFC 6454. If empty, all origins are allowed.
+  A maximum of 100 origins is allowed.
+  Example: "https://example.com"
+
+* `enable_origin_check` -
+  (Optional)
+  Indicates whether origin check for the web widget is enabled.
+  If `true`, the web widget will check the origin of the website that
+  loads the web widget and only allow it to be loaded in the same origin
+  or any of the allowed origins.
+
+* `enable_public_access` -
+  (Optional)
+  Indicates whether public access to the web widget is enabled.
+  If `true`, the web widget will be publicly accessible.
+  If `false`, the web widget must be integrated with your own
+  authentication and authorization system to return valid credentials for
+  accessing the CES agent.
+
+* `enable_recaptcha` -
+  (Optional)
+  Indicates whether reCAPTCHA verification for the web widget is enabled.
+
 <a name="nested_default_channel_profile_whatsapp_config"></a>The `whatsapp_config` block supports:
 
 * `waba_id` -
@@ -749,6 +800,16 @@ The following arguments are supported:
   (Optional)
   Settings for golden evaluations.
   Structure is [documented below](#nested_evaluation_metrics_thresholds_golden_evaluation_metrics_thresholds).
+
+* `golden_hallucination_metric_behavior` -
+  (Optional)
+  The hallucination metric behavior for golden evaluations.
+  Possible values are: `DISABLED`, `ENABLED`.
+
+* `scenario_hallucination_metric_behavior` -
+  (Optional)
+  The hallucination metric behavior for scenario evaluations.
+  Possible values are: `DISABLED`, `ENABLED`.
 
 
 <a name="nested_evaluation_metrics_thresholds_golden_evaluation_metrics_thresholds"></a>The `golden_evaluation_metrics_thresholds` block supports:
@@ -832,6 +893,12 @@ The following arguments are supported:
   Settings to describe the conversation logging behaviors for the app.
   Structure is [documented below](#nested_logging_settings_conversation_logging_settings).
 
+* `metric_analysis_settings` -
+  (Optional)
+  Settings to describe the conversation data collection behaviors for the LLM
+  analysis pipeline for the app.
+  Structure is [documented below](#nested_logging_settings_metric_analysis_settings).
+
 * `redaction_config` -
   (Optional)
   Configuration to instruct how sensitive data should be handled.
@@ -894,6 +961,14 @@ The following arguments are supported:
   (Optional)
   Controls the retention window for the conversation.
   If not set, the conversation will be retained for 365 days.
+
+<a name="nested_logging_settings_metric_analysis_settings"></a>The `metric_analysis_settings` block supports:
+
+* `llm_metrics_opted_out` -
+  (Optional)
+  Whether to collect conversation data for llm analysis metrics. If true,
+  conversation data will not be collected for llm analysis metrics;
+  otherwise, conversation data will be collected.
 
 <a name="nested_logging_settings_redaction_config"></a>The `redaction_config` block supports:
 

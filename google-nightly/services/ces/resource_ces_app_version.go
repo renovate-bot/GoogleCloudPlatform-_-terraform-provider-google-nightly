@@ -1010,6 +1010,22 @@ between 0 and 4. Default is >= 3.`,
 														},
 													},
 												},
+												"golden_hallucination_metric_behavior": {
+													Type:     schema.TypeString,
+													Computed: true,
+													Description: `The hallucination metric behavior for golden evaluations.
+Possible values:
+DISABLED
+ENABLED`,
+												},
+												"scenario_hallucination_metric_behavior": {
+													Type:     schema.TypeString,
+													Computed: true,
+													Description: `The hallucination metric behavior for scenario evaluations.
+Possible values:
+DISABLED
+ENABLED`,
+												},
 											},
 										},
 									},
@@ -1166,6 +1182,23 @@ NUMBER>@gcp-sa-ces.iam.gserviceaccount.com.`,
 																Computed: true,
 																Description: `Controls the retention window for the conversation.
 If not set, the conversation will be retained for 365 days.`,
+															},
+														},
+													},
+												},
+												"metric_analysis_settings": {
+													Type:     schema.TypeList,
+													Computed: true,
+													Description: `Settings to describe the conversation data collection behaviors for the LLM
+analysis pipeline for the app.`,
+													Elem: &schema.Resource{
+														Schema: map[string]*schema.Schema{
+															"llm_metrics_opted_out": {
+																Type:     schema.TypeBool,
+																Computed: true,
+																Description: `Whether to collect conversation data for llm analysis metrics. If true,
+conversation data will not be collected for llm analysis metrics;
+otherwise, conversation data will be collected.`,
 															},
 														},
 													},
@@ -4522,6 +4555,10 @@ func flattenCESAppVersionSnapshotAppEvaluationMetricsThresholds(v interface{}, d
 	transformed := make(map[string]interface{})
 	transformed["golden_evaluation_metrics_thresholds"] =
 		flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsGoldenEvaluationMetricsThresholds(original["goldenEvaluationMetricsThresholds"], d, config)
+	transformed["golden_hallucination_metric_behavior"] =
+		flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsGoldenHallucinationMetricBehavior(original["goldenHallucinationMetricBehavior"], d, config)
+	transformed["scenario_hallucination_metric_behavior"] =
+		flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsScenarioHallucinationMetricBehavior(original["scenarioHallucinationMetricBehavior"], d, config)
 	return []interface{}{transformed}
 }
 func flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsGoldenEvaluationMetricsThresholds(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
@@ -4592,6 +4629,14 @@ func flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsGoldenEvaluationM
 	return v // let terraform core handle it otherwise
 }
 
+func flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsGoldenHallucinationMetricBehavior(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
+	return v
+}
+
+func flattenCESAppVersionSnapshotAppEvaluationMetricsThresholdsScenarioHallucinationMetricBehavior(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
+	return v
+}
+
 func flattenCESAppVersionSnapshotAppGlobalInstruction(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
 	return v
 }
@@ -4652,6 +4697,8 @@ func flattenCESAppVersionSnapshotAppLoggingSettings(v interface{}, d *schema.Res
 		flattenCESAppVersionSnapshotAppLoggingSettingsCloudLoggingSettings(original["cloudLoggingSettings"], d, config)
 	transformed["conversation_logging_settings"] =
 		flattenCESAppVersionSnapshotAppLoggingSettingsConversationLoggingSettings(original["conversationLoggingSettings"], d, config)
+	transformed["metric_analysis_settings"] =
+		flattenCESAppVersionSnapshotAppLoggingSettingsMetricAnalysisSettings(original["metricAnalysisSettings"], d, config)
 	transformed["redaction_config"] =
 		flattenCESAppVersionSnapshotAppLoggingSettingsRedactionConfig(original["redactionConfig"], d, config)
 	return []interface{}{transformed}
@@ -4745,6 +4792,20 @@ func flattenCESAppVersionSnapshotAppLoggingSettingsConversationLoggingSettingsDi
 }
 
 func flattenCESAppVersionSnapshotAppLoggingSettingsConversationLoggingSettingsRetentionWindow(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
+	return v
+}
+
+func flattenCESAppVersionSnapshotAppLoggingSettingsMetricAnalysisSettings(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
+	if v == nil {
+		return nil
+	}
+	original := v.(map[string]interface{})
+	transformed := make(map[string]interface{})
+	transformed["llm_metrics_opted_out"] =
+		flattenCESAppVersionSnapshotAppLoggingSettingsMetricAnalysisSettingsLlmMetricsOptedOut(original["llmMetricsOptedOut"], d, config)
+	return []interface{}{transformed}
+}
+func flattenCESAppVersionSnapshotAppLoggingSettingsMetricAnalysisSettingsLlmMetricsOptedOut(v interface{}, d *schema.ResourceData, config *transport_tpg.Config) interface{} {
 	return v
 }
 

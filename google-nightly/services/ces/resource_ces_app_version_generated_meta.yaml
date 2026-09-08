@@ -103,6 +103,8 @@ fields:
     - api_field: snapshot.app.evaluationMetricsThresholds.goldenEvaluationMetricsThresholds.expectationLevelMetricsThresholds.toolInvocationParameterCorrectnessThreshold
     - api_field: snapshot.app.evaluationMetricsThresholds.goldenEvaluationMetricsThresholds.turnLevelMetricsThresholds.overallToolInvocationCorrectnessThreshold
     - api_field: snapshot.app.evaluationMetricsThresholds.goldenEvaluationMetricsThresholds.turnLevelMetricsThresholds.semanticSimilaritySuccessThreshold
+    - api_field: snapshot.app.evaluationMetricsThresholds.goldenHallucinationMetricBehavior
+    - api_field: snapshot.app.evaluationMetricsThresholds.scenarioHallucinationMetricBehavior
     - api_field: snapshot.app.globalInstruction
     - api_field: snapshot.app.guardrails
     - api_field: snapshot.app.languageSettings.defaultLanguageCode
@@ -117,6 +119,7 @@ fields:
     - api_field: snapshot.app.loggingSettings.cloudLoggingSettings.enableCloudLogging
     - api_field: snapshot.app.loggingSettings.conversationLoggingSettings.disableConversationLogging
     - api_field: snapshot.app.loggingSettings.conversationLoggingSettings.retentionWindow
+    - api_field: snapshot.app.loggingSettings.metricAnalysisSettings.llmMetricsOptedOut
     - api_field: snapshot.app.loggingSettings.redactionConfig.deidentifyTemplate
     - api_field: snapshot.app.loggingSettings.redactionConfig.enableRedaction
     - api_field: snapshot.app.loggingSettings.redactionConfig.inspectTemplate
